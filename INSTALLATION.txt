@@ -1,0 +1,85 @@
+╔══════════════════════════════════════════════════════════════════╗
+║        SYSTÈME DE GESTION DES COMMANDES - INSTALLATION          ║
+╚══════════════════════════════════════════════════════════════════╝
+
+📋 INSTALLATION RAPIDE (5 minutes)
+═══════════════════════════════════════════════════════════════════
+
+1️⃣  COPIER LES FICHIERS
+   → Placer tous les fichiers dans votre dossier web
+   → Exemple : C:\xampp\htdocs\commandes\ (Windows)
+   → Exemple : /var/www/html/commandes/ (Linux)
+
+2️⃣  CRÉER LA BASE DE DONNÉES
+   → Ouvrir phpMyAdmin (http://localhost/phpmyadmin)
+   → Créer une nouvelle base : "gestion_commandes"
+   → Importer le fichier "database.sql"
+
+3️⃣  CONFIGURER LA CONNEXION (si nécessaire)
+   → Ouvrir : classes/Database.php
+   → Modifier si vos identifiants MySQL sont différents :
+     • host = 'localhost'
+     • username = 'root'
+     • password = ''
+     • db_name = 'gestion_commandes'
+
+4️⃣  PERMISSIONS (Linux/Mac uniquement)
+   → chmod 777 downloads/
+   (Le dossier downloads/ se créera automatiquement au premier usage)
+
+5️⃣  ACCÉDER AU SITE
+   → http://localhost/commandes/index.php
+   → Créer votre première commande !
+
+═══════════════════════════════════════════════════════════════════
+🎯 FONCTIONNALITÉS
+═══════════════════════════════════════════════════════════════════
+
+✓ Liste de toutes les commandes
+✓ Création de nouvelles commandes
+✓ Export CSV automatique (UTF-8, point-virgule)
+✓ Versioning automatique (V2, V3...)
+✓ Interface Bootstrap moderne
+
+═══════════════════════════════════════════════════════════════════
+📁 STRUCTURE DES FICHIERS
+═══════════════════════════════════════════════════════════════════
+
+gestion-commandes/
+├── classes/
+│   ├── Database.php       → Connexion base de données
+│   ├── Commande.php       → Gestion des commandes
+│   └── CSVExporter.php    → Export CSV
+├── downloads/             → Fichiers CSV générés (auto-créé)
+├── index.php              → Page principale (liste)
+├── nouvelle-commande.php  → Formulaire nouvelle commande
+├── database.sql           → Structure base de données
+├── config.php             → Configuration
+├── README.txt             → Documentation complète
+└── INSTALLATION.txt       → Ce fichier
+
+═══════════════════════════════════════════════════════════════════
+🔧 RÉSOLUTION DE PROBLÈMES
+═══════════════════════════════════════════════════════════════════
+
+❌ Erreur de connexion BDD
+   → Vérifier les identifiants dans classes/Database.php
+   → Vérifier que MySQL est démarré
+
+❌ Fichier CSV non généré
+   → Vérifier les permissions du dossier downloads/
+   → chmod 777 downloads/
+
+❌ Caractères accentués mal affichés
+   → Le système utilise UTF-8 avec BOM
+   → Ouvrir les CSV avec Excel ou LibreOffice
+
+❌ Page blanche
+   → Activer l'affichage des erreurs PHP
+   → Vérifier les logs Apache/Nginx
+
+═══════════════════════════════════════════════════════════════════
+📞 BESOIN D'AIDE ?
+═══════════════════════════════════════════════════════════════════
+
+Consulter le fichier README.txt pour plus de détails !

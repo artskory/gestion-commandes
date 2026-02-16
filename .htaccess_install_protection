@@ -1,0 +1,7 @@
+# Protection du fichier d'installation après installation
+# Ce fichier est créé automatiquement par install.php
+
+<Files "install.php">
+    Order allow,deny
+    Deny from all
+</Files>

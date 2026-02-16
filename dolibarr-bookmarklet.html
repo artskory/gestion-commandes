@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookmarklet Dolibarr - Gestion des Commandes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 0;
+        }
+        .bookmarklet-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+        .bookmarklet-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+            display: inline-block;
+            cursor: move;
+            transition: transform 0.2s;
+        }
+        .bookmarklet-button:hover {
+            transform: scale(1.05);
+            color: white;
+        }
+        .step-card {
+            border-left: 4px solid #667eea;
+            margin-bottom: 20px;
+        }
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+            margin-right: 15px;
+        }
+        .demo-gif {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="text-center mb-4">
+            <h1 class="text-white">
+                <i class="bi bi-bookmark-star"></i> 
+                Bookmarklet Dolibarr
+            </h1>
+            <p class="text-white">Import en 1 clic depuis Dolibarr vers Gestion des Commandes</p>
+        </div>
+
+        <div class="bookmarklet-card">
+            <div class="text-center mb-4">
+                <h3><i class="bi bi-star-fill text-warning"></i> Le Bookmarklet</h3>
+                <p class="text-muted">Glissez ce bouton dans votre barre de favoris</p>
+                
+                <!-- LE BOOKMARKLET -->
+                <div class="p-4 bg-light rounded">
+                    <a href="javascript:(function(){var d={societe:'',numero_commande:'',numero_devis:'',date_commande:'',delai_fabrication:'',reference_article:'',quantite:''};try{var s=document.querySelector('.refidno a[href*=&quot;societe/card.php&quot;]');if(s)d.societe=s.textContent.trim();var n=document.querySelector('.refid.refidpadding');if(n)d.numero_commande=n.childNodes[0].textContent.trim();var p=document.querySelector('a[href*=&quot;/comm/propal/card.php&quot;]');if(p){var m=p.textContent.match(/PR\d+-\d+/);if(m)d.numero_devis=m[0]}var r=document.querySelectorAll('tr');for(var i=0;i<r.length;i++){var c=r[i].querySelectorAll('td');if(c.length>=2){var l=c[0].textContent.trim();if(l==='Date'){var t=c[1].textContent.trim();var mt=t.match(/(\d{2})\/(\d{2})\/(\d{4})/);if(mt)d.date_commande=mt[3]+'-'+mt[2]+'-'+mt[1]}if(l.includes('livraison')||l.includes('fabrication')){var v=c[1].querySelector('.valuefield');if(v)d.delai_fabrication=v.textContent.trim()}}}var rf=document.querySelector('a[href*=&quot;/product/card.php&quot;]');if(rf)d.reference_article=rf.textContent.trim();var q=document.querySelector('.linecolqty.right');if(q)d.quantite=q.textContent.trim().replace(/\s/g,'');if(!d.numero_commande&&!d.societe){alert('Erreur: Impossible d\'extraire les données. Êtes-vous sur une page de commande Dolibarr?');return}sessionStorage.setItem('dolibarr_import_data',JSON.stringify(d));var u='%%BASE_URL%%/nouvelle-commande.php';window.open(u,'_blank')}catch(e){alert('Erreur: '+e.message)}})();" 
+                       class="bookmarklet-button"
+                       onclick="return false;">
+                        <i class="bi bi-download"></i> Exporter vers Gestion Commandes
+                    </a>
+                </div>
+                
+                <div class="alert alert-warning mt-3" role="alert">
+                    <i class="bi bi-hand-index"></i> 
+                    <strong>Glissez-déposez</strong> ce bouton dans votre barre de favoris !
+                </div>
+            </div>
+        </div>
+
+        <div class="bookmarklet-card">
+            <h3 class="mb-4">
+                <i class="bi bi-list-ol"></i> Installation
+            </h3>
+            
+            <div class="card step-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-start">
+                        <span class="step-number">1</span>
+                        <div>
+                            <h5>Affichez votre barre de favoris</h5>
+                            <p class="mb-2">Si elle n'est pas visible :</p>
+                            <ul>
+                                <li><strong>Chrome/Edge :</strong> Ctrl + Shift + B (Windows) ou Cmd + Shift + B (Mac)</li>
+                                <li><strong>Firefox :</strong> Ctrl + Shift + B (Windows) ou Cmd + Shift + B (Mac)</li>
+                                <li><strong>Safari :</strong> Cmd + Shift + B</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card step-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-start">
+                        <span class="step-number">2</span>
+                        <div>
+                            <h5>Glissez le bouton violet dans vos favoris</h5>
+                            <p class="mb-0">
+                                <i class="bi bi-mouse2"></i> 
+                                Cliquez sur le bouton violet "Exporter vers Gestion Commandes" ci-dessus et 
+                                <strong>glissez-le</strong> dans votre barre de favoris.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card step-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-start">
+                        <span class="step-number">3</span>
+                        <div>
+                            <h5>C'est terminé !</h5>
+                            <p class="mb-0">
+                                <i class="bi bi-check-circle text-success"></i> 
+                                Le bookmarklet est maintenant installé. Vous pouvez l'utiliser sur n'importe quelle page de commande Dolibarr.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bookmarklet-card">
+            <h3 class="mb-4">
+                <i class="bi bi-play-circle"></i> Utilisation
+            </h3>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="badge bg-primary me-2">1</span>
+                                <h6 class="mb-0">Ouvrez une commande dans Dolibarr</h6>
+                            </div>
+                            <p class="text-muted small mb-0">Allez sur la fiche d'une commande client dans votre Dolibarr</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="badge bg-primary me-2">2</span>
+                                <h6 class="mb-0">Cliquez sur le bookmarklet</h6>
+                            </div>
+                            <p class="text-muted small mb-0">Dans votre barre de favoris, cliquez sur "Exporter vers Gestion Commandes"</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="badge bg-success me-2">3</span>
+                                <h6 class="mb-0">Le formulaire se remplit automatiquement !</h6>
+                            </div>
+                            <p class="text-muted small mb-0">Un nouvel onglet s'ouvre avec le formulaire pré-rempli</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="alert alert-info">
+                        <h6><i class="bi bi-lightbulb"></i> Avantages du bookmarklet</h6>
+                        <ul class="mb-0">
+                            <li><strong>Ultra rapide :</strong> 1 seul clic</li>
+                            <li><strong>Pas de copier-coller :</strong> Tout est automatique</li>
+                            <li><strong>Fonctionne toujours :</strong> Même si Dolibarr change</li>
+                            <li><strong>Sécurisé :</strong> Aucune donnée n'est envoyée à un serveur</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <h6><i class="bi bi-exclamation-triangle"></i> Important</h6>
+                        <ul class="mb-0">
+                            <li>Vous devez être <strong>connecté à Dolibarr</strong></li>
+                            <li>Fonctionne uniquement sur les <strong>pages de commandes</strong></li>
+                            <li>Les popups doivent être <strong>autorisés</strong> pour ce site</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bookmarklet-card">
+            <h3 class="mb-4">
+                <i class="bi bi-question-circle"></i> Problèmes courants
+            </h3>
+            
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            Le bookmarklet ne fait rien quand je clique dessus
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            <strong>Solutions :</strong>
+                            <ul>
+                                <li>Vérifiez que vous êtes bien sur une page de <strong>commande Dolibarr</strong></li>
+                                <li>Essayez de <strong>recharger la page</strong> Dolibarr</li>
+                                <li>Vérifiez que les popups ne sont <strong>pas bloqués</strong></li>
+                                <li>Ouvrez la console (F12) pour voir les éventuelles erreurs</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            Le formulaire ne se remplit pas correctement
+                        </button>
+                    </h2>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            <strong>Possible si :</strong>
+                            <ul>
+                                <li>La page Dolibarr n'est pas complètement chargée</li>
+                                <li>Votre version de Dolibarr a une structure HTML différente</li>
+                                <li>Certains champs sont vides dans Dolibarr</li>
+                            </ul>
+                            <strong>Solution :</strong> Utilisez plutôt la méthode par URL (copier-coller l'URL)
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            Je ne peux pas glisser le bookmarklet
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            <strong>Méthode alternative :</strong>
+                            <ol>
+                                <li>Faites un <strong>clic droit</strong> sur le bouton violet</li>
+                                <li>Sélectionnez "<strong>Copier l'adresse du lien</strong>"</li>
+                                <li>Créez un nouveau favori manuellement</li>
+                                <li>Collez le lien copié comme URL du favori</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bookmarklet-card text-center">
+            <h4><i class="bi bi-arrow-left-circle"></i> Alternative</h4>
+            <p>Vous préférez copier-coller l'URL ?</p>
+            <a href="nouvelle-commande.php" class="btn btn-primary">
+                <i class="bi bi-link-45deg"></i> Utiliser l'import par URL
+            </a>
+        </div>
+
+        <div class="text-center text-white mt-4">
+            <p><a href="./" class="text-white text-decoration-none">
+                <i class="bi bi-house-fill"></i> Retour à l'accueil
+            </a></p>
+            <small>Gestion des Commandes v1.31</small>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Remplacer %%BASE_URL%% par l'URL actuelle
+        document.addEventListener('DOMContentLoaded', function() {
+            const baseUrl = window.location.origin + window.location.pathname.replace('dolibarr-bookmarklet.html', '');
+            const bookmarkletLink = document.querySelector('.bookmarklet-button');
+            if (bookmarkletLink) {
+                const href = bookmarkletLink.getAttribute('href');
+                bookmarkletLink.setAttribute('href', href.replace('%%BASE_URL%%', baseUrl));
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+# =====================================================
+# GESTION DES COMMANDES - RÉÉCRITURE D'URL
+# Version 1.24
+# =====================================================
+
+# Activer le moteur de réécriture
+RewriteEngine On
+RewriteBase /gestion-commandes/
+
+# ===== RÈGLES DE RÉÉCRITURE =====
+
+# Page d'accueil : / → index.php
+RewriteRule ^$ index.php [L]
+
+# Nouvelle commande : /nouvelle → nouvelle-commande.php
+RewriteRule ^nouvelle$ nouvelle-commande.php [L]
+
+# Éditer commande : /editer/123 → editer-commande.php?id=123
+RewriteRule ^editer/([0-9]+)$ editer-commande.php?id=$1 [L]
+
+# Rechargement : /recharger/123 → index.php?recharger=1&id=123
+RewriteRule ^recharger/([0-9]+)$ index.php?recharger=1&id=$1 [L]
+
+# Supprimer : /supprimer/123 → index.php?supprimer=1&id=123
+RewriteRule ^supprimer/([0-9]+)$ index.php?supprimer=1&id=$1 [L]
+
+# Corbeille : /corbeille → index.php?corbeille=confirme
+RewriteRule ^corbeille$ index.php?corbeille=confirme [L]
+
+# ===== SÉCURITÉ =====
+
+# Bloquer l'accès direct aux fichiers sensibles
+<FilesMatch "\.(env|sql|md|txt|log)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Bloquer l'accès aux dossiers sensibles
+RedirectMatch 403 ^/gestion-commandes/(classes|controllers|config\.php)
