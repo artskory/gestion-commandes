@@ -21,14 +21,14 @@
 >
     <div class="container mt-5 mb-5">
         <div class="row justify-content-center">
-            <div class="col-md-9">
+            <div class="col-md-7">
                 <div class="card card-shadow">
                     <form method="POST" action="">
                         <div class="card-header d-flex align-items-center justify-content-between">
                             <h2 class="font-bold">Éditer Commande</h2>
                             <div>
                                 <button type="submit" name="action" value="sauvegarder" class="btn btn-primary me-2 shadow-blue"><i class="bi bi-floppy icons"></i>Enregistrer</button>
-                                <button type="submit" name="action" value="recharger" class="btn btn-warning me-2 shadow-yellow"><i class="bi bi-arrow-clockwise icons"></i>Enregistrer et Recharger</button>
+                                <button type="submit" name="action" value="recharger" class="btn btn-warning me-2 shadow-yellow"><i class="bi bi-arrow-clockwise icons"></i>Recharger</button>
                                 <a href="../" class="btn btn-danger me-2 shadow-red"><i class="bi bi-x-circle icons"></i>Annuler</a>
                             </div>
                         </div>

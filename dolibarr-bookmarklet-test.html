@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Bookmarklet Dolibarr - Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 0;
+        }
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+        .bookmarklet-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+            display: inline-block;
+            cursor: move;
+            margin: 10px;
+        }
+        .bookmarklet-btn:hover {
+            color: white;
+            transform: scale(1.05);
+        }
+        .debug-btn {
+            background: #dc3545;
+        }
+        code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #e83e8c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="text-center mb-4">
+            <h1 class="text-white">
+                <i class="bi bi-bookmark-star"></i> 
+                Test Bookmarklet Dolibarr
+            </h1>
+        </div>
+
+        <div class="card">
+            <h3 class="mb-4">🐛 Version DEBUG (à tester en premier)</h3>
+            <p>Ce bookmarklet affiche des messages dans la console pour comprendre ce qui se passe.</p>
+            
+            <div class="text-center mb-4">
+                <a href="javascript:(function(){console.log('=== BOOKMARKLET START ===');alert('✅ Le bookmarklet fonctionne!\\n\\nRegardez la console (F12) pour voir les détails.');var d={societe:'',numero_commande:'',numero_devis:'',date_commande:'',delai_fabrication:'',reference_article:'',quantite:''};try{console.log('1. Extraction société...');var s=document.querySelector('.refidno a[href*=&quot;societe&quot;]');if(s){d.societe=s.textContent.trim();console.log('✅ Société:',d.societe);}else{console.warn('❌ Société non trouvée');}console.log('2. Extraction numéro commande...');var n=document.querySelector('.refid.refidpadding');if(n){d.numero_commande=n.childNodes[0].textContent.trim();console.log('✅ Numéro commande:',d.numero_commande);}else{console.warn('❌ Numéro commande non trouvé');}console.log('3. Extraction numéro devis...');var p=document.querySelector('a[href*=&quot;propal&quot;]');if(p){var m=p.textContent.match(/PR\d+-\d+/);if(m){d.numero_devis=m[0];console.log('✅ Numéro devis:',d.numero_devis);}}else{console.warn('⚠️ Devis non trouvé (peut être normal)');}console.log('4. Extraction date...');var rows=document.querySelectorAll('tr');for(var i=0;i<rows.length;i++){var cells=rows[i].querySelectorAll('td');if(cells.length>=2){var label=cells[0].textContent.trim();if(label==='Date'){var dateText=cells[1].textContent.trim();var match=dateText.match(/(\d{2})\/(\d{2})\/(\d{4})/);if(match){d.date_commande=match[3]+'-'+match[2]+'-'+match[1];console.log('✅ Date:',d.date_commande);}}if(label.includes('livraison')||label.includes('fabrication')){var val=cells[1].querySelector('.valuefield');if(val){d.delai_fabrication=val.textContent.trim();console.log('✅ Délai:',d.delai_fabrication);}}}}console.log('5. Extraction référence...');var ref=document.querySelector('a[href*=&quot;product&quot;]');if(ref){d.reference_article=ref.textContent.trim();console.log('✅ Référence:',d.reference_article);}else{console.warn('⚠️ Référence non trouvée');}console.log('6. Extraction quantité...');var qty=document.querySelector('.linecolqty');if(qty){d.quantite=qty.textContent.trim().replace(/\s/g,'');console.log('✅ Quantité:',d.quantite);}else{console.warn('⚠️ Quantité non trouvée');}console.log('7. DONNÉES EXTRAITES:',d);if(!d.numero_commande&&!d.societe){alert('❌ ERREUR\\n\\nAucune donnée n\\'a pu être extraite.\\n\\nVérifiez:\\n- Vous êtes sur une COMMANDE CLIENT\\n- La page est complètement chargée\\n\\nRegardez la console (F12) pour les détails.');console.error('Erreur: Aucune donnée extraite');return;}alert('✅ EXTRACTION RÉUSSIE!\\n\\nDonnées trouvées:\\n\\nSociété: '+d.societe+'\\nCommande: '+d.numero_commande+'\\nDevis: '+d.numero_devis+'\\n\\nUn nouvel onglet va s\\'ouvrir...');console.log('8. Sauvegarde sessionStorage...');sessionStorage.setItem('dolibarr_import_data',JSON.stringify(d));console.log('9. Ouverture application...');var baseUrl=prompt('Entrez l\\'URL de votre application Gestion Commandes:\\n(ex: http://localhost/gestion-commandes)','http://localhost/gestion-commandes');if(baseUrl){var url=baseUrl+'/nouvelle-commande.php';console.log('URL:',url);var win=window.open(url,'_blank');if(!win){alert('⚠️ Popup bloqué!\\n\\nAutorisez les popups pour ce site.');}else{console.log('✅ Fenêtre ouverte');}}console.log('=== BOOKMARKLET END ===');}catch(e){console.error('❌ ERREUR:',e);alert('❌ ERREUR\\n\\n'+e.message+'\\n\\nRegardez la console (F12)');}})()" 
+                   class="bookmarklet-btn debug-btn"
+                   onclick="return false;">
+                    🐛 TEST DEBUG - Glissez-moi dans vos favoris
+                </a>
+            </div>
+            
+            <div class="alert alert-warning">
+                <h6>⚠️ Important : Ce bookmarklet de test va :</h6>
+                <ol>
+                    <li>Afficher un message au démarrage</li>
+                    <li>Afficher tous les logs dans la console</li>
+                    <li>Afficher les données extraites</li>
+                    <li>Vous demander l'URL de votre application</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 class="mb-4">📋 Comment tester ?</h3>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>1️⃣ Installation</h5>
+                    <ol>
+                        <li>Affiche ta barre de favoris (<code>Ctrl+Shift+B</code>)</li>
+                        <li><strong>Glisse</strong> le bouton rouge dans tes favoris</li>
+                    </ol>
+                </div>
+                
+                <div class="col-md-6">
+                    <h5>2️⃣ Utilisation</h5>
+                    <ol>
+                        <li>Va sur une <strong>commande Dolibarr</strong></li>
+                        <li>Ouvre la console (<code>F12</code>)</li>
+                        <li>Clique sur le bookmarklet</li>
+                        <li>Regarde les messages !</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <hr>
+            
+            <h5>3️⃣ Que regarder dans la console ?</h5>
+            <div class="alert alert-info">
+                <p class="mb-2">La console doit afficher :</p>
+                <pre class="mb-0" style="background: #f8f9fa; padding: 10px; border-radius: 5px;">
+=== BOOKMARKLET START ===
+✅ Société: Mme Patricia Paul
+✅ Numéro commande: CO2602-4359
+✅ Numéro devis: PR2602-4076
+...
+=== BOOKMARKLET END ===</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 class="mb-4">🚨 Problèmes courants</h3>
+            
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            Le bookmarklet ne fait RIEN (pas de message)
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse show">
+                        <div class="accordion-body">
+                            <strong>Causes possibles :</strong>
+                            <ul>
+                                <li>❌ Le bookmarklet n'est pas bien installé (c'est un lien normal, pas un bookmarklet)</li>
+                                <li>❌ JavaScript est désactivé</li>
+                                <li>❌ Une extension bloque les bookmarklets</li>
+                            </ul>
+                            <strong>Solution :</strong>
+                            <ol>
+                                <li>Clic droit sur le bookmarklet → Modifier</li>
+                                <li>Vérifie que l'URL commence par <code>javascript:(function()</code></li>
+                                <li>Si elle commence par <code>http://</code> → Ce n'est PAS un bookmarklet ❌</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            Message "Aucune donnée extraite"
+                        </button>
+                    </h2>
+                    <div id="faq2" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <strong>Causes :</strong>
+                            <ul>
+                                <li>❌ Vous n'êtes pas sur une page de COMMANDE CLIENT</li>
+                                <li>❌ Vous êtes sur un devis, une facture, ou autre chose</li>
+                                <li>❌ La structure HTML de votre Dolibarr est différente</li>
+                            </ul>
+                            <strong>Solution :</strong>
+                            <p>Vérifiez dans la console QUELLES données sont trouvées et lesquelles ne le sont pas.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            Le popup ne s'ouvre pas
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <strong>Cause :</strong> Les popups sont bloqués
+                            <br>
+                            <strong>Solution :</strong> Autorise les popups pour Dolibarr dans les paramètres du navigateur
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center text-white mt-4">
+            <p><a href="nouvelle-commande.php" class="text-white">← Retour au formulaire</a></p>
+            <p><a href="dolibarr-bookmarklet.html" class="text-white">→ Version normale du bookmarklet</a></p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

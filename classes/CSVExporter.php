@@ -13,7 +13,16 @@ class CSVExporter {
         
         // Créer le dossier s'il n'existe pas
         if (!file_exists($this->download_path)) {
-            mkdir($this->download_path, 0777, true);
+            if (!@mkdir($this->download_path, 0777, true)) {
+                // Si la création échoue, lever une exception claire
+                throw new Exception("Impossible de créer le dossier '$this->download_path'. Veuillez le créer manuellement et donner les permissions 755 ou 777.");
+            }
+            @chmod($this->download_path, 0777); // Force les permissions
+        }
+        
+        // Vérifier que le dossier est accessible en écriture
+        if (!is_writable($this->download_path)) {
+            throw new Exception("Le dossier '$this->download_path' n'est pas accessible en écriture. Veuillez exécuter: chmod 777 downloads/");
         }
     }
     

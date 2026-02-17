@@ -85,10 +85,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
         
         // 4. Créer le dossier downloads s'il n'existe pas
         if (!file_exists('downloads')) {
-            mkdir('downloads', 0755, true);
-            $success .= "✅ Dossier 'downloads' créé avec succès.<br>";
+            if (@mkdir('downloads', 0777, true)) {
+                @chmod('downloads', 0777); // Force les permissions
+                $success .= "✅ Dossier 'downloads' créé avec succès.<br>";
+            } else {
+                // Si la création échoue, essayer quand même de continuer
+                $success .= "⚠️ Impossible de créer le dossier 'downloads'. Veuillez le créer manuellement avec les permissions 755 ou 777.<br>";
+            }
         } else {
-            $success .= "✅ Dossier 'downloads' déjà existant.<br>";
+            // Vérifier les permissions
+            if (is_writable('downloads')) {
+                $success .= "✅ Dossier 'downloads' déjà existant et accessible en écriture.<br>";
+            } else {
+                $success .= "⚠️ Dossier 'downloads' existe mais n'est pas accessible en écriture. Veuillez donner les permissions 755 ou 777.<br>";
+            }
         }
         
         // 5. Mettre à jour le fichier Database.php avec les nouvelles informations

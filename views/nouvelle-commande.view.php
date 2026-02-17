@@ -21,7 +21,7 @@
 >
     <div class="container mt-5 mb-5">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-7">
                 <div class="card card-shadow">
                     <form method="POST" action="">
                         <div class="card-header d-flex align-items-center justify-content-between">
@@ -33,57 +33,6 @@
                         </div>
                         <div class="card-body">
                             <!-- Les alertes sont maintenant gérées par JavaScript -->
-                            
-                            <!-- Section Import Dolibarr -->
-                            <div class="alert alert-info alert-dismissible fade show" role="alert">
-                                <h5 class="alert-heading">
-                                    <i class="bi bi-download"></i> Importer depuis Dolibarr
-                                </h5>
-                                <p class="mb-3">Copiez l'URL d'une commande Dolibarr pour remplir automatiquement ce formulaire.</p>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-link-45deg"></i></span>
-                                    <input type="text" 
-                                           class="form-control" 
-                                           id="dolibarr-url" 
-                                           placeholder="https://votre-dolibarr.com/commande/card.php?id=..."
-                                           aria-label="URL Dolibarr">
-                                    <button class="btn btn-primary" 
-                                            type="button" 
-                                            id="dolibarr-import-btn">
-                                        <i class="bi bi-arrow-down-circle"></i> Importer
-                                    </button>
-                                </div>
-                                <small class="text-muted mt-2 d-block">
-                                    <i class="bi bi-info-circle"></i> 
-                                    Vous devez être connecté à Dolibarr dans ce navigateur. 
-                                    <a href="#" data-bs-toggle="collapse" data-bs-target="#dolibarr-help" class="text-decoration-none">
-                                        En savoir plus
-                                    </a>
-                                </small>
-                                
-                                <!-- Aide repliable -->
-                                <div class="collapse mt-3" id="dolibarr-help">
-                                    <div class="card card-body bg-light">
-                                        <h6><i class="bi bi-question-circle"></i> Comment utiliser l'import ?</h6>
-                                        <ol class="mb-2">
-                                            <li>Connectez-vous à votre Dolibarr</li>
-                                            <li>Ouvrez une commande client</li>
-                                            <li>Copiez l'URL de la page (Ctrl+L puis Ctrl+C)</li>
-                                            <li>Collez l'URL dans le champ ci-dessus</li>
-                                            <li>Cliquez sur "Importer"</li>
-                                        </ol>
-                                        <p class="mb-0">
-                                            <strong>Astuce :</strong> Vous pouvez aussi utiliser le 
-                                            <a href="dolibarr-bookmarklet.html" target="_blank" class="text-decoration-none">
-                                                bookmarklet <i class="bi bi-box-arrow-up-right"></i>
-                                            </a> 
-                                            pour importer en 1 clic depuis Dolibarr !
-                                        </p>
-                                    </div>
-                                </div>
-                                
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
                             
                             <div class="row">
                                 <!-- Colonne de gauche -->
@@ -188,13 +137,16 @@
                             </div>
                         </div>
                     </form>
+                    <a href="dolibarr-bookmarklet.html" class="btn btn-primary btn-vertical" target="_blank">
+                        <i class="bi bi-bookmark-star"></i> Installer le Bookmarklet
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
     <footer class="text-center text-muted py-3 mt-5">
-        <small>Version 1.31</small>
+        <small>Version 2.1.0</small>
     </footer>
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -202,6 +154,59 @@
     <script src="js/alert.js"></script>
     <script src="js/dolibarr-import.js"></script>
     <script>
+        // Remplir le formulaire depuis les paramètres URL (import Dolibarr)
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            if (urlParams.get('import') === 'dolibarr') {
+                console.log('Import Dolibarr détecté depuis URL');
+                
+                // Mapping des paramètres URL vers les champs du formulaire
+                const mapping = {
+                    'societe': 'societe',
+                    'n_commande_client': 'n_commande_client',
+                    'n_devis': 'n_devis',
+                    'reference_article': 'reference_article',
+                    'quantite_par_modele': 'quantite_par_modele',
+                    'delai_fabrication': 'delai_fabrication'
+                };
+                
+                let hasData = false;
+                Object.keys(mapping).forEach(function(param) {
+                    const value = urlParams.get(param);
+                    if (value) {
+                        const field = document.getElementById(mapping[param]);
+                        if (field) {
+                            field.value = value;
+                            field.style.borderColor = '#28a745';
+                            field.style.borderWidth = '2px';
+                            hasData = true;
+                            console.log('Champ rempli:', mapping[param], '=', value);
+                        }
+                    }
+                });
+                
+                if (hasData) {
+                    // Afficher un message de succès
+                    const alert = document.createElement('div');
+                    alert.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+                    alert.style.zIndex = '9999';
+                    alert.innerHTML = '<strong><i class="bi bi-check-circle-fill"></i> Données importées depuis Dolibarr !</strong><button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
+                    document.body.appendChild(alert);
+                    setTimeout(function() {
+                        alert.classList.remove('show');
+                        setTimeout(function() { alert.remove(); }, 150);
+                    }, 5000);
+                    
+                    // Nettoyer l'URL (enlever les paramètres)
+                    setTimeout(function() {
+                        const cleanUrl = window.location.origin + window.location.pathname;
+                        window.history.replaceState({}, document.title, cleanUrl);
+                    }, 1000);
+                }
+            }
+        });
+        
         function clearDatePicker() {
             if (document.getElementById('delais_liste').value !== '') {
                 document.getElementById('delais_date').value = '';

@@ -21,8 +21,8 @@ RewriteRule ^editer/([0-9]+)$ editer-commande.php?id=$1 [L]
 # Rechargement : /recharger/123 → index.php?recharger=1&id=123
 RewriteRule ^recharger/([0-9]+)$ index.php?recharger=1&id=$1 [L]
 
-# Supprimer : /supprimer/123 → index.php?supprimer=1&id=123
-RewriteRule ^supprimer/([0-9]+)$ index.php?supprimer=1&id=$1 [L]
+# Supprimer : /supprimer/123 ou /supprimer/1,2,3 → index.php?supprimer=1&id=...
+RewriteRule ^supprimer/([0-9,]+)$ index.php?supprimer=1&id=$1 [L]
 
 # Corbeille : /corbeille → index.php?corbeille=confirme
 RewriteRule ^corbeille$ index.php?corbeille=confirme [L]

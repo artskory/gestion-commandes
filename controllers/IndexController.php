@@ -71,17 +71,32 @@ class IndexController {
     }
     
     /**
-     * Supprimer une commande individuelle
+     * Supprimer une ou plusieurs commandes (IDs séparés par virgules)
      */
-    private function supprimerCommande($id) {
+    private function supprimerCommande($ids) {
         $baseUrl = $this->getBaseUrl();
-        if ($this->commande->delete($id)) {
-            header('Location: ' . $baseUrl . '/?success=suppression_individuelle');
-            exit;
-        } else {
+        
+        // Accepter un ou plusieurs IDs séparés par virgules
+        $listeIds = array_filter(array_map('intval', explode(',', $ids)));
+        
+        if (empty($listeIds)) {
             header('Location: ' . $baseUrl . '/?error=suppression');
             exit;
         }
+        
+        $succes = true;
+        foreach ($listeIds as $id) {
+            if (!$this->commande->delete($id)) {
+                $succes = false;
+            }
+        }
+        
+        if ($succes) {
+            header('Location: ' . $baseUrl . '/?success=suppression_individuelle');
+        } else {
+            header('Location: ' . $baseUrl . '/?error=suppression');
+        }
+        exit;
     }
     
     /**
@@ -101,6 +116,12 @@ class IndexController {
         $data = $this->commande->getById($id);
         
         if ($data) {
+            // Supprimer l'ancien CSV avant de générer le nouveau
+            $ancienCsv = 'downloads/' . $data['n_commande_client'] . '.csv';
+            if (file_exists($ancienCsv)) {
+                unlink($ancienCsv);
+            }
+            
             // Incrémenter la version
             $nouveau_numero = $this->commande->incrementerVersion($data['n_commande_client']);
             

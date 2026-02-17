@@ -1,0 +1,45 @@
+// BOOKMARKLET VERSION URL PARAMS - SANS DATE
+// À copier-coller comme URL d'un favori
+
+javascript:(function(){
+    try{
+        var d={};
+        var s=document.querySelector('.refidno a[href*="societe/card.php"]');
+        if(s)d.societe=s.textContent.trim();
+        var n=document.querySelector('.refid.refidpadding');
+        if(n)d.numero_commande=n.childNodes[0].textContent.trim();
+        var p=document.querySelector('a[href*="/comm/propal/card.php"]');
+        if(p){var m=p.textContent.match(/PR\d+-\d+/);if(m)d.numero_devis=m[0]}
+        var r=document.querySelectorAll('tr');
+        for(var i=0;i<r.length;i++){
+            var c=r[i].querySelectorAll('td');
+            if(c.length>=2){
+                var l=c[0].textContent.trim();
+                if(l.includes('livraison')||l.includes('fabrication')){
+                    var v=c[1].querySelector('.valuefield');
+                    if(v)d.delai_fabrication=v.textContent.trim()
+                }
+            }
+        }
+        var rf=document.querySelector('a[href*="/product/card.php"]');
+        if(rf)d.reference_article=rf.textContent.trim();
+        var q=document.querySelector('.linecolqty.right');
+        if(q)d.quantite=q.textContent.trim().replace(/\s/g,'');
+        if(!d.numero_commande&&!d.societe){
+            alert('Erreur: Impossible d\'extraire les données');
+            return
+        }
+        var params=new URLSearchParams();
+        if(d.societe)params.set('societe',d.societe);
+        if(d.numero_commande)params.set('n_commande_client',d.numero_commande);
+        if(d.numero_devis)params.set('n_devis',d.numero_devis);
+        if(d.delai_fabrication)params.set('delai_fabrication',d.delai_fabrication);
+        if(d.reference_article)params.set('reference_article',d.reference_article);
+        if(d.quantite)params.set('quantite_par_modele',d.quantite);
+        params.set('import','dolibarr');
+        var u='http://localhost/gestion-commandes/nouvelle-commande.php?'+params.toString();
+        window.open(u,'_blank')
+    }catch(e){
+        alert('Erreur: '+e.message)
+    }
+})();
