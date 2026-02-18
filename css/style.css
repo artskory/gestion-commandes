@@ -72,6 +72,10 @@ body {
     --bs-card-border-color: #38414E !important;
 }
 
+.border {
+    border-color: #38414E !important;
+}
+
 .table,
 .table th,
 .table td {
@@ -85,14 +89,15 @@ body {
 }
 
 .card-body {
-    background-color: #fdfeff;
+    background-color: transparent !important;
 }
 
 .card-header {
     padding: 24px;
 }
 
-.card-header a {
+.card-header a,
+.card-header h2 {
     color: #EAEFF4 !important;
 }
 
@@ -125,6 +130,15 @@ body {
     padding: 16px;
 }
 
+.form-control {
+    background-color: transparent;
+    border-color: #38414E !important;
+}
+
+.form-control:focus {
+    background-color: #7c8fac;
+}
+
 .form-switch .form-check-input {
     margin-left: 0.25em;
 }
@@ -135,6 +149,10 @@ body {
 
 .form-check-input:checked[type=radio] {
     margin: 5px;
+}
+
+.form-label {
+  color: #EAEFF4 !important;
 }
 
 .space-y-3 > :not([hidden]) ~ :not([hidden]) {
