@@ -209,15 +209,15 @@
     <div class="container mt-5 mb-5">
         <div class="row justify-content-center">
             <div class="col-md-7">
-                <div class="card card-shadow">
+                <div class="card">
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <h2 class="font-bold"><a href="./" class="title-link">Liste des Commandes</a></h2>
                         <div class="d-flex align-items-center gap-2">
-                            <a href="nouvelle" class="btn btn-primary shadow-blue">
+                            <a href="nouvelle" class="btn btn-primary">
                                 <i class="bi bi-plus-lg"></i> Nouveau
                             </a>
                             <button id="btn-supprimer-selection"
-                                    class="btn btn-danger shadow-red d-none"
+                                    class="btn btn-danger d-none"
                                     onclick="confirmerSuppressionSelection()">
                                 <i class="bi bi-trash"></i>
                                 Supprimer (<span id="nb-selection">0</span>)
@@ -238,7 +238,7 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="text-dark">
                                 <?php if (count($this->commandes) > 0): ?>
                                     <?php foreach ($this->commandes as $cmd): ?>
                                         <tr class="text-center align-middle">
@@ -247,15 +247,15 @@
                                             <td><?php echo htmlspecialchars($cmd['n_commande_client']); ?></td>
                                             <td>
                                                 <a href="#" 
-                                                   class="btn btn-sm bg-warning-subtle me-1"
+                                                   class="btn btn-sm bg-warning-subtle icon-warning me-1"
                                                    title="Rechargement"
                                                    onclick="confirmerRechargement(event, <?php echo $cmd['id']; ?>);">
-                                                    <i class="bi bi-arrow-clockwise icon-warning"></i>
+                                                    <i class="bi bi-arrow-clockwise"></i>
                                                 </a>
                                                 <a href="editer/<?php echo $cmd['id']; ?>" 
-                                                   class="btn btn-sm bg-primary-subtle"
+                                                   class="btn btn-sm bg-primary-subtle icon-primary"
                                                    title="Éditer">
-                                                    <i class="bi bi-pencil icon-blue"></i>
+                                                    <i class="bi bi-pencil"></i>
                                                 </a>
                                             </td>
                                             <td>
@@ -279,7 +279,7 @@
         </div>
     </div>
 
-    <footer class="text-center text-muted py-3 mt-5">
+    <footer class="text-center text-dark py-3 mt-5">
         <small>Version 2.1.1</small>
     </footer>
     
