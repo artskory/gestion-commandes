@@ -226,7 +226,7 @@
                     </div>
                     
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover">
+                        <table class="table">
                             <thead>
                                 <tr class="text-center">
                                     <th>ID</th>
@@ -247,15 +247,15 @@
                                             <td><?php echo htmlspecialchars($cmd['n_commande_client']); ?></td>
                                             <td>
                                                 <a href="#" 
-                                                   class="btn btn-sm btn-outline-warning me-1"
+                                                   class="btn btn-sm bg-warning-subtle me-1"
                                                    title="Rechargement"
                                                    onclick="confirmerRechargement(event, <?php echo $cmd['id']; ?>);">
-                                                    <i class="bi bi-arrow-clockwise"></i>
+                                                    <i class="bi bi-arrow-clockwise icon-warning"></i>
                                                 </a>
                                                 <a href="editer/<?php echo $cmd['id']; ?>" 
-                                                   class="btn btn-sm btn-outline-primary"
+                                                   class="btn btn-sm bg-primary-subtle"
                                                    title="Éditer">
-                                                    <i class="bi bi-pencil"></i>
+                                                    <i class="bi bi-pencil icon-blue"></i>
                                                 </a>
                                             </td>
                                             <td>
