@@ -174,7 +174,7 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br" 
+<body 
       <?php if ($this->success): 
           $msg = '';
           if ($this->success == 'creation') $msg = 'Commande créée avec succès !';

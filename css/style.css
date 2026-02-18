@@ -9,6 +9,10 @@ html {
     position: relative;
 }
 
+body {
+    background-color: #202936;
+}
+
 /* ===== 2. COULEURS ET UTILITAIRES ===== */
 .blue {
     color: blue;
