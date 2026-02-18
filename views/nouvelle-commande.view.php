@@ -40,7 +40,7 @@
                                     <div class="mb-3">
                                         <i class="bi bi-buildings blue icons"></i><label for="societe" class="form-label font-medium">Société *</label>
                                         <input type="text" class="form-control" id="societe" name="societe" 
-                                               value="<?php echo isset($_POST['societe']) ? htmlspecialchars($_POST['societe']) : ''; ?>" required>
+                                               value="<?php echo isset($_POST['societe']) ? htmlspecialchars($_POST['societe']) : ''; ?> "style="border-color: rgb(40, 167, 69); border-width: 5px;" required>
                                     </div>
                                     
                                     <div class="mb-3">
