@@ -58,7 +58,7 @@ body {
 }
 
 .bg-warning-subtle {
-  background-color: #4d3a2a !important;
+  background-color: #996600 !important;
 }
 
 .bg-warning-subtle:hover {
@@ -67,7 +67,7 @@ body {
 
 /* ===== 6. CARTES (CARDS) ===== */
 .card {
-    background-color: #243142;
+    background-color: #F8F8FF;
     border-color: #7c8fac !important;
     --bs-card-border-color: #7c8fac !important;
 }
@@ -80,12 +80,12 @@ body {
 .table th,
 .table td {
     background-color: transparent !important;
-    color: #EAEFF4;
+    color: #243142;
     border-color: #414B58;
 }
 
 .table tr:hover {
-    background-color: #465670 !important;color: #EAEFF4 !important;
+    background-color: #465670 !important;
 }
 
 .card-body {
@@ -96,9 +96,8 @@ body {
     padding: 24px;
 }
 
-.card-header a,
-.card-header h2 {
-    color: #EAEFF4 !important;
+.card-header h2 a{
+    color: #243142 !important;
 }
 
 /* ===== 7. EFFETS DE SURVOL ===== */
@@ -153,7 +152,7 @@ body {
 }
 
 .form-label {
-  color: #7c8fac !important;
+  color: #243142 !important;
 }
 
 .form-select {
@@ -163,7 +162,7 @@ body {
 }
 
 .form-select option {
-    background-color: #243142;
+    background-color: #E7E9EB;
 }
 
 .form-select option:hover {
@@ -208,12 +207,13 @@ body {
 .btn-vertical {
   position: absolute;
   top: 150px;
-  right: -148px;
+  right: -140px;
   transform: translateY(-50%) rotate(-90deg);
   transform-origin: center;
   padding: 10px 20px;
   font-weight: bold;
   border-radius: 0 0 7px 7px;
+  z-index: -1;
 }
 
 /* ===== 12. ALERTES BOOTSTRAP ===== */
@@ -294,9 +294,9 @@ body {
     }
 }
 
-/* Type : Succès (Vert) */
-.custom-alert.alert-success {
-    background: #d4edda;
+/* Type : Succès (Vert) */ 
+.lol .custom-alert.alert-success {
+    background: #d4edda; 
     border-left: 8px solid #28a745;
 }
 
@@ -313,7 +313,7 @@ body {
 }
 
 .custom-alert.alert-success .alert-close-btn:hover {
-    background: #b1dfbb;
+    background: #b1dfbb; 
 }
 
 .custom-alert.alert-success .alert-close-btn i {
@@ -433,11 +433,11 @@ body {
 
 .text-dark,
 .text-dark td {
-  color: #7c8fac !important;
+  color: #243142 !important;
 }
 
-.text-light {
-    color: #EAEFF4 !important;
+.text-input {
+    color: #243142 !important;
 }
 
 .custom-select-arrow {
@@ -519,4 +519,8 @@ body {
 
 .number-arrows button:hover {
     background: #0b5ed7;
+}
+
+.table-hover tbody tr:hover td{
+    color: #F8F8FF !important;
 }

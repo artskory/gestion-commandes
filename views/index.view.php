@@ -208,7 +208,7 @@
 
     <div class="container mt-5 mb-5">
         <div class="row justify-content-center">
-            <div class="col-md-7">
+            <div class="col-md-8">
                 <div class="card">
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <h2 class="font-bold"><a href="./" class="title-link">Liste des Commandes</a></h2>
@@ -226,7 +226,7 @@
                     </div>
                     
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table table-hover">
                             <thead>
                                 <tr class="text-center">
                                     <th>ID</th>
@@ -238,7 +238,7 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody class="text-dark">
+                            <tbody>
                                 <?php if (count($this->commandes) > 0): ?>
                                     <?php foreach ($this->commandes as $cmd): ?>
                                         <tr class="text-center align-middle">
