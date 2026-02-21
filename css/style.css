@@ -430,6 +430,9 @@ body {
   border-color: #5d87ff;
 }
 
+.form-check-input:hover {
+  --bs-form-check-bg: snow !important;
+}
 .text-dark,
 .text-dark td {
   color: #243142 !important;
@@ -520,6 +523,10 @@ body {
     background: #0b5ed7;
 }
 
-.table-hover tbody tr:hover td{
+.table-hover tbody tr:hover td {
     color: #F8F8FF !important;
+}
+
+.table-hover tbody tr:hover td input {
+    background: #F8F8FF !important;
 }

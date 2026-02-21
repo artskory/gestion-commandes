@@ -199,7 +199,7 @@
                     setTimeout(function() {
                         alert.classList.remove('show');
                         setTimeout(function() { alert.remove(); }, 150);
-                    }, 500000);
+                    }, 5000);
                     
                     // Nettoyer l'URL (enlever les paramètres)
                     setTimeout(function() {
