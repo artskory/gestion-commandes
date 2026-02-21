@@ -207,13 +207,12 @@ body {
 .btn-vertical {
   position: absolute;
   top: 150px;
-  right: -140px;
+  right: -143px;
   transform: translateY(-50%) rotate(-90deg);
   transform-origin: center;
   padding: 10px 20px;
   font-weight: bold;
   border-radius: 0 0 7px 7px;
-  z-index: -1;
 }
 
 /* ===== 12. ALERTES BOOTSTRAP ===== */
