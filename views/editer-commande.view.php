@@ -144,7 +144,7 @@
         </div>
     </div>
 
-    <footer class="text-center text-muted py-3 mt-5">
+    <footer class="text-center text-light py-3 mt-5">
         <small>Version 1.30</small>
     </footer>
     
