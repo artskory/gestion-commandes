@@ -25,13 +25,13 @@
     <div class="container mt-5 mb-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card card-shadow">
+                <div class="card">
                     <form method="POST" action="">
                         <div class="card-header d-flex align-items-center justify-content-between">
                             <h2 class="font-bold">Nouvelle Commande</h2>
                             <div>
-                                <button type="submit" class="btn btn-primary me-2 shadow-blue"><i class="bi bi-floppy icons"></i>Sauvegarder</button>
-                                <a href="./" class="btn btn-danger me-2 shadow-red"><i class="bi bi-x-circle icons"></i>Annuler</a>
+                                <button type="submit" class="btn btn-primary me-2"><i class="bi bi-floppy icons"></i>Sauvegarder</button>
+                                <a href="./" class="btn btn-danger me-2 "><i class="bi bi-x-circle icons"></i>Annuler</a>
                             </div>
                         </div>
                         <div class="card-body">

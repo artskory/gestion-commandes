@@ -1,41 +1,104 @@
 /* =====================================================
    GESTION DES COMMANDES - STYLES PERSONNALISÉS
-   Version 1.24
+   Version 1.25
    ===================================================== */
 
-/* ===== 1. CONFIGURATION GÉNÉRALE ===== */
+/* =====================================================
+   VARIABLES GLOBALES (CSS Custom Properties)
+   ===================================================== */
+:root {
+    /* Couleurs principales */
+    --color-dark:           #243142;  /* Fond body, textes sombres */
+    --color-border:         #7c8fac;  /* Bordures générales */
+    --color-white-soft:     #F8F8FF;  /* Fond carte, textes sur fond sombre */
+    --color-title:          #212529;  /* Liens de titre */
+
+    /* Couleur primaire (bleu) */
+    --color-primary:        #5d87ff;
+    --color-primary-hover:  #4f73d9;
+    --color-primary-dark:   #232F46;  /* Hover icône primaire */
+
+    /* Couleur warning (orange) */
+    --color-warning:        #ffae1f;
+    --color-warning-dark:   #996600;  /* Fond bg-warning-subtle */
+    --color-warning-text:   #4d3a2a;  /* Hover icône warning */
+
+    /* Couleur danger (rouge-orangé) */
+    --color-danger:         #FA896B;
+    --color-danger-hover:   #d5745b;
+
+    /* Couleurs des alertes succès */
+    --alert-success-bg:     #d4edda;
+    --alert-success-border: #28a745;
+    --alert-success-text:   #155724;
+    --alert-success-btn:    #c3e6cb;
+    --alert-success-btn-hv: #b1dfbb;
+
+    /* Couleurs des alertes danger */
+    --alert-danger-bg:      #f8d7da;
+    --alert-danger-border:  #dc3545;
+    --alert-danger-text:    #721c24;
+    --alert-danger-btn:     #f5c6cb;
+    --alert-danger-btn-hv:  #f1b0b7;
+
+    /* Couleurs des alertes warning */
+    --alert-warning-bg:     #ffdb9b;
+    --alert-warning-border: #ffa502;
+    --alert-warning-text:   #ce8500;
+    --alert-warning-btn:    #ffd080;
+    --alert-warning-btn-hv: #ffc766;
+
+    /* Espacements & Formes */
+    --border-radius-xl:     .75rem;
+    --padding-card-header:  24px;
+    --icon-padding-right:   8px;
+}
+
+
+/* =====================================================
+   1. CONFIGURATION GÉNÉRALE
+   ===================================================== */
+
 html {
     min-height: 100%;
     position: relative;
 }
 
 body {
-    background-color: #243142;
+    background-color: var(--color-dark);
 }
 
-/* ===== 2. COULEURS ET UTILITAIRES ===== */
+
+/* =====================================================
+   2. COULEURS & ICÔNES UTILITAIRES
+   ===================================================== */
+
+/* Icône couleur primaire */
 .icon-primary {
-    color: #5d87ff;
+    color: var(--color-primary);
 }
-
 .icon-primary:hover {
-    color: #232F46;
+    color: var(--color-primary-dark);
 }
 
+/* Icône couleur warning */
 .icon-warning {
-    color: #ffae1f;
+    color: var(--color-warning);
 }
-
 .icon-warning:hover {
-    color: #4d3a2a;
+    color: var(--color-warning-text);
 }
 
-/* ===== 3. ARRIÈRE-PLANS ===== */
-.bg-gradient-to-br {
-    background: linear-gradient(#f8fafd, #cbdde9);
+/* Texte danger (utilisé pour les astérisques obligatoires) */
+.danger {
+    color: var(--color-danger);
 }
 
-/* ===== 4. TYPOGRAPHIE ===== */
+
+/* =====================================================
+   3. TYPOGRAPHIE
+   ===================================================== */
+
 .font-medium {
     font-weight: 500;
 }
@@ -44,48 +107,62 @@ body {
     font-weight: 700;
 }
 
-/* ===== 5. ESPACEMENTS ===== */
+/* Lien de titre (ex: "Liste des Commandes" cliquable) */
+.title-link {
+    text-decoration: none;
+    color: var(--color-title);
+    transition: opacity 0.3s ease;
+}
+.title-link:hover {
+    color: var(--color-title);
+    opacity: 0.7;
+}
+
+
+/* =====================================================
+   4. ESPACEMENTS & UTILITAIRES
+   ===================================================== */
+
+/* Marge droite pour les icônes placées avant un label */
 .icons {
-    padding-right: 8px;
+    padding-right: var(--icon-padding-right);
 }
 
+/* Bordures arrondies façon "pill" pour les blocs radio (statut fichier) */
+.rounded-xl {
+    border-radius: var(--border-radius-xl);
+}
+
+
+/* =====================================================
+   5. ARRIÈRE-PLANS COLORÉS (badges / boutons icône)
+   ===================================================== */
+
+/* Fond bleu transparent → plein au survol (bouton Éditer) */
 .bg-primary-subtle {
-  background-color: rgba(93, 135, 255, 0.1) !important;
+    background-color: rgba(93, 135, 255, 0.1) !important;
 }
-
 .bg-primary-subtle:hover {
-  background-color: rgba(93, 135, 255, 1) !important;
+    background-color: var(--color-primary) !important;
 }
 
+/* Fond orange sombre → vif au survol (bouton Recharger) */
 .bg-warning-subtle {
-  background-color: #996600 !important;
+    background-color: var(--color-warning-dark) !important;
 }
-
 .bg-warning-subtle:hover {
-  background-color: #ffae1f !important;
+    background-color: var(--color-warning) !important;
 }
 
-/* ===== 6. CARTES (CARDS) ===== */
+
+/* =====================================================
+   6. CARTES (CARDS)
+   ===================================================== */
+
 .card {
-    background-color: #F8F8FF;
-    border-color: #7c8fac !important;
-    --bs-card-border-color: #7c8fac !important;
-}
-
-.border {
-    border-color: #7c8fac !important;
-}
-
-.table,
-.table th,
-.table td {
-    background-color: transparent !important;
-    color: #243142;
-    border-color: #414B58;
-}
-
-.table tr:hover {
-    background-color: #465670 !important;
+    background-color: var(--color-white-soft);
+    border-color: var(--color-border) !important;
+    --bs-card-border-color: var(--color-border) !important;
 }
 
 .card-body {
@@ -93,148 +170,247 @@ body {
 }
 
 .card-header {
-    padding: 24px;
+    padding: var(--padding-card-header);
 }
 
-.card-header h2 a{
-    color: #243142 !important;
-}
-
-/* ===== 7. EFFETS DE SURVOL ===== */
-.hover:hover {
-    --tw-bg-opacity: 1;
-    background-color: rgb(219 234 254 / var(--tw-bg-opacity, 1));
-}
-
-.transition-colors {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-    transition-timing-function: cubic-bezier(.4, 0, .2, 1);
-    transition-duration: .15s;
-}
-
-/* ===== 8. BORDURES ARRONDIES ===== */
-.rounded-full {
-    border-radius: 9999px;
-}
-
-.rounded-xl {
-    border-radius: .75rem;
+/* Lien dans le titre d'une card-header */
+.card-header h2 a {
+    color: var(--color-dark) !important;
 }
 
 
-/* ===== 10. FORMULAIRES ===== */
+/* =====================================================
+   7. BORDURES
+   ===================================================== */
+
+/* Surcharge de la couleur de bordure Bootstrap */
 .border {
+    border-color: var(--color-border) !important;
     border-width: 1px;
-    margin-top: calc(.75rem * calc(1 - var(--tw-space-y-reverse)));
     padding: 16px;
 }
 
+
+/* =====================================================
+   8. TABLEAU
+   ===================================================== */
+
+/* Fond transparent + couleurs adaptées au thème sombre */
+.table,
+.table th,
+.table td {
+    background-color: transparent !important;
+    color: var(--color-dark);
+    border-color: #414B58;
+}
+
+/* Survol de ligne */
+.table tr:hover {
+    background-color: #465670 !important;
+}
+
+/* Texte des cellules au survol (ligne sombre → texte clair) */
+.table-hover tbody tr:hover td {
+    color: var(--color-white-soft) !important;
+}
+
+/* Input dans une cellule survolée */
+.table-hover tbody tr:hover td input {
+    background: var(--color-white-soft) !important;
+}
+
+
+/* =====================================================
+   9. FORMULAIRES
+   ===================================================== */
+
+/* --- Inputs texte & date --- */
 .form-control {
     background-color: transparent;
-    border-color: #7c8fac !important;
+    border-color: var(--color-border) !important;
 }
-
 .form-control:focus {
-    background-color: #7c8fac;
-    color : black !important;
+    background-color: var(--color-border);
+    color: black !important;
 }
 
+/* Couleur du texte dans les champs de saisie */
+.text-input {
+    color: var(--color-dark) !important;
+}
+
+/* --- Labels --- */
+.form-label {
+    color: var(--color-dark) !important;
+}
+
+/* --- Select --- */
+.form-select {
+    background-color: transparent;
+    border-color: var(--color-border) !important;
+    color: #EAEFF4;
+}
+.form-select option {
+    background-color: #E7E9EB;
+}
+.form-select option:hover {
+    background-color: var(--color-border) !important;
+}
+
+/* Select avec flèche SVG personnalisée (remplace la flèche native) */
+.custom-select-arrow {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 2.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%237c8fac' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+}
+
+/* --- Checkboxes & Radios (remplacement complet du style Bootstrap) --- */
+.form-check-input {
+    border: 1px solid #57647a;
+    --bs-form-check-bg: transparent;
+    flex-shrink: 0;
+    width: 1.313em;
+    height: 1.313em;
+    margin-top: .0935em;
+    vertical-align: top;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: var(--bs-form-check-bg);
+    background-image: var(--bs-form-check-bg-image);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+/* Coche SVG blanche pour les checkboxes cochées */
+.form-check-input:checked[type=checkbox] {
+    --bs-form-check-bg-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+}
+
+/* Fond bleu pour checkbox cochée ou indéterminée */
+.form-check-input[type="checkbox"]:indeterminate,
+.form-check-input:checked {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+/* Fond neige au survol */
+.form-check-input:hover {
+    --bs-form-check-bg: snow !important;
+}
+
+/* Espacement du toggle switch */
 .form-switch .form-check-input {
     margin-left: 0.25em;
 }
 
-.form-check-input[type=radio] {
-    margin: 5px;
-}
-
+/* Marge des boutons radio */
+.form-check-input[type=radio],
 .form-check-input:checked[type=radio] {
     margin: 5px;
 }
 
-.form-label {
-  color: #243142 !important;
+/* --- Wrapper champ date (icône calendrier personnalisée) --- */
+.date-wrapper {
+    position: relative;
+    display: inline-block;
 }
 
-.form-select {
-    background-color: transparent;
-    border-color: #7c8fac !important;
-    color: #EAEFF4;
+.date-wrapper input {
+    padding-right: 2.5rem;
+    appearance: none;
 }
 
-.form-select option {
-    background-color: #E7E9EB;
+/* Masque l'icône native Chrome */
+.date-wrapper input::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
 }
 
-.form-select option:hover {
-    background-color: #7c8fac !important;
+/* Icône calendrier SVG personnalisée (pseudo-élément) */
+.date-wrapper::after {
+    content: "";
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%237c8fac' viewBox='0 0 16 16'%3E%3Cpath d='M3 1h1v1h8V1h1v1h1a1 1 0 0 1 1 1v2H1V3a1 1 0 0 1 1-1h1V1zm12 5v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6h14z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: contain;
+    pointer-events: none;
 }
 
-.space-y-3 > :not([hidden]) ~ :not([hidden]) {
-    --tw-space-y-reverse: 0;
-    margin-top: calc(.75rem * calc(1 - var(--tw-space-y-reverse)));
-    margin-bottom: calc(.75rem * var(--tw-space-y-reverse));
-}
 
-/* ===== 11. BOUTONS ===== */
+/* =====================================================
+   10. BOUTONS
+   ===================================================== */
+
+/* Bouton primaire */
 .btn-primary {
-    background-color: #5d87ff;
+    background-color: var(--color-primary);
 }
-
 .btn-primary:hover {
-  background-color: #4f73d9;
-  border-color: #4f73d9;
+    background-color: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
 }
 
+/* Bouton warning (texte blanc forcé) */
 .btn-warning {
     --bs-btn-color: #fff;
     --bs-btn-hover-color: #fff;
 }
 
-.danger {
-    color: #FA896B;
-}
-
+/* Bouton danger */
 .btn-danger {
-    background-color: #FA896B;
-    border-color: #FA896B;
+    background-color: var(--color-danger);
+    border-color: var(--color-danger);
 }
-
 .btn-danger:hover {
-  background-color: #d5745b;
-  border-color: #d5745b;
+    background-color: var(--color-danger-hover);
+    border-color: var(--color-danger-hover);
 }
 
+/* Bouton vertical flottant (lien Bookmarklet sur la vue nouvelle commande) */
 .btn-vertical {
-  position: absolute;
-  top: 150px;
-  right: -143px;
-  transform: translateY(-50%) rotate(-90deg);
-  transform-origin: center;
-  padding: 10px 20px;
-  font-weight: bold;
-  border-radius: 0 0 7px 7px;
+    position: absolute;
+    top: 150px;
+    right: -143px;
+    transform: translateY(-50%) rotate(-90deg);
+    transform-origin: center;
+    padding: 10px 20px;
+    font-weight: bold;
+    border-radius: 0 0 7px 7px;
 }
 
-/* ===== 12. ALERTES BOOTSTRAP ===== */
+
+/* =====================================================
+   11. ALERTES BOOTSTRAP (surcharge marge)
+   ===================================================== */
+
 .alert {
     --bs-alert-margin-bottom: none;
 }
 
-/* ===== 13. LIEN TITRE ===== */
-.title-link {
-    text-decoration: none;
-    color: #212529;
-    transition: opacity 0.3s ease;
-}
 
-.title-link:hover {
-    color: #212529;
-    opacity: 0.7;
-}
+/* =====================================================
+   12. ALERTES PERSONNALISÉES ANIMÉES (alert.js)
+   ===================================================== */
 
-/* ===== 14. ALERTES PERSONNALISÉES ANIMÉES ===== */
-
-/* Structure de base */
+/* --- Structure de base --- */
 .custom-alert {
     padding: 20px 40px;
     min-width: 420px;
@@ -249,29 +425,22 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* Alerte visible et cliquable */
 .custom-alert.showAlert {
     opacity: 1;
     pointer-events: auto;
 }
 
-/* Animations d'entrée et sortie */
+/* --- Animations d'entrée / sortie (glissement depuis la gauche) --- */
 .custom-alert.show {
     animation: show_slide_left 1s ease forwards;
 }
 
 @keyframes show_slide_left {
-    0% {
-        transform: translateX(-100%);
-    }
-    40% {
-        transform: translateX(10%);
-    }
-    80% {
-        transform: translateX(0%);
-    }
-    100% {
-        transform: translateX(10px);
-    }
+    0%   { transform: translateX(-100%); }
+    40%  { transform: translateX(10%); }
+    80%  { transform: translateX(0%); }
+    100% { transform: translateX(10px); }
 }
 
 .custom-alert.hide {
@@ -279,99 +448,66 @@ body {
 }
 
 @keyframes hide_slide_left {
-    0% {
-        transform: translateX(10px);
-    }
-    40% {
-        transform: translateX(0%);
-    }
-    80% {
-        transform: translateX(10%);
-    }
-    100% {
-        transform: translateX(-100%);
-    }
+    0%   { transform: translateX(10px); }
+    40%  { transform: translateX(0%); }
+    80%  { transform: translateX(10%); }
+    100% { transform: translateX(-100%); }
 }
 
-/* Type : Succès (Vert) */ 
+/* --- Type : Succès (vert) --- */
 .custom-alert.alert-success {
-    background: #d4edda; 
-    border-left: 8px solid #28a745;
+    background: var(--alert-success-bg);
+    border-left: 8px solid var(--alert-success-border);
 }
-
-.custom-alert.alert-success .alert-icon {
-    color: #155724;
-}
-
-.custom-alert.alert-success .alert-msg {
-    color: #155724;
-}
-
-.custom-alert.alert-success .alert-close-btn {
-    background: #c3e6cb;
-}
-
-.custom-alert.alert-success .alert-close-btn:hover {
-    background: #b1dfbb; 
-}
-
+.custom-alert.alert-success .alert-icon,
+.custom-alert.alert-success .alert-msg,
 .custom-alert.alert-success .alert-close-btn i {
-    color: #155724;
+    color: var(--alert-success-text);
+}
+.custom-alert.alert-success .alert-close-btn {
+    background: var(--alert-success-btn);
+}
+.custom-alert.alert-success .alert-close-btn:hover {
+    background: var(--alert-success-btn-hv);
 }
 
-/* Type : Erreur (Rouge) */
+/* --- Type : Erreur (rouge) --- */
 .custom-alert.alert-danger {
-    background: #f8d7da;
-    border-left: 8px solid #dc3545;
+    background: var(--alert-danger-bg);
+    border-left: 8px solid var(--alert-danger-border);
 }
-
-.custom-alert.alert-danger .alert-icon {
-    color: #721c24;
-}
-
-.custom-alert.alert-danger .alert-msg {
-    color: #721c24;
-}
-
-.custom-alert.alert-danger .alert-close-btn {
-    background: #f5c6cb;
-}
-
-.custom-alert.alert-danger .alert-close-btn:hover {
-    background: #f1b0b7;
-}
-
+.custom-alert.alert-danger .alert-icon,
+.custom-alert.alert-danger .alert-msg,
 .custom-alert.alert-danger .alert-close-btn i {
-    color: #721c24;
+    color: var(--alert-danger-text);
+}
+.custom-alert.alert-danger .alert-close-btn {
+    background: var(--alert-danger-btn);
+}
+.custom-alert.alert-danger .alert-close-btn:hover {
+    background: var(--alert-danger-btn-hv);
 }
 
-/* Type : Warning (Orange) */
+/* --- Type : Warning (orange) --- */
 .custom-alert.alert-warning {
-    background: #ffdb9b;
-    border-left: 8px solid #ffa502;
+    background: var(--alert-warning-bg);
+    border-left: 8px solid var(--alert-warning-border);
 }
-
-.custom-alert.alert-warning .alert-icon {
-    color: #ce8500;
-}
-
-.custom-alert.alert-warning .alert-msg {
-    color: #ce8500;
-}
-
-.custom-alert.alert-warning .alert-close-btn {
-    background: #ffd080;
-}
-
-.custom-alert.alert-warning .alert-close-btn:hover {
-    background: #ffc766;
-}
-
+.custom-alert.alert-warning .alert-icon,
+.custom-alert.alert-warning .alert-msg,
 .custom-alert.alert-warning .alert-close-btn i {
-    color: #ce8500;
+    color: var(--alert-warning-text);
+}
+.custom-alert.alert-warning .alert-close-btn {
+    background: var(--alert-warning-btn);
+}
+.custom-alert.alert-warning .alert-close-btn:hover {
+    background: var(--alert-warning-btn-hv);
 }
 
-/* Éléments internes des alertes */
+/* --- Éléments internes communs à toutes les alertes --- */
+
+/* Icône à gauche, centrée verticalement */
 .custom-alert .alert-icon {
     position: absolute;
     left: 20px;
@@ -380,153 +516,24 @@ body {
     font-size: 30px;
 }
 
+/* Message principal */
 .custom-alert .alert-msg {
     padding: 0 20px;
     font-size: 18px;
     font-weight: 500;
 }
 
+/* Bouton de fermeture à droite */
 .custom-alert .alert-close-btn {
     position: absolute;
-    right: 0px;
+    right: 0;
     top: 50%;
     transform: translateY(-50%);
     padding: 20px 18px;
     cursor: pointer;
     transition: background 0.3s ease;
 }
-
 .custom-alert .alert-close-btn i {
     font-size: 22px;
     line-height: 40px;
-}
-
-.form-check-input {
-  border: 1px solid #57647a;
-  --bs-form-check-bg: transparent;
-  flex-shrink: 0;
-  width: 1.313em;
-  height: 1.313em;
-  margin-top: .0935em;
-  vertical-align: top;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-color: var(--bs-form-check-bg);
-  background-image: var(--bs-form-check-bg-image);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  -webkit-print-color-adjust: exact;
-  print-color-adjust: exact;
-}
-
-.form-check-input:checked[type=checkbox] {
-  --bs-form-check-bg-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e")
-}
-.form-check-input[type="checkbox"]:indeterminate,
-.form-check-input:checked {
-  background-color: #5d87ff;
-  border-color: #5d87ff;
-}
-
-.form-check-input:hover {
-  --bs-form-check-bg: snow !important;
-}
-.text-dark,
-.text-dark td {
-  color: #243142 !important;
-}
-
-.text-input {
-    color: #243142 !important;
-}
-
-.custom-select-arrow {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-
-    padding-right: 2.5rem;
-
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%237c8fac' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 16px 12px;
-}
-
-.date-wrapper {
-    position: relative;
-    display: inline-block;
-}
-
-.date-wrapper input {
-    padding-right: 2.5rem;
-    appearance: none; /* enlève style natif */
-}
-
-/* Masque l’icône native Chrome */
-.date-wrapper input::-webkit-calendar-picker-indicator {
-    opacity: 0;
-    position: absolute;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-}
-
-/* Icône personnalisée */
-.date-wrapper::after {
-    content: "";
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 18px;
-    height: 18px;
-
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%237c8fac' viewBox='0 0 16 16'%3E%3Cpath d='M3 1h1v1h8V1h1v1h1a1 1 0 0 1 1 1v2H1V3a1 1 0 0 1 1-1h1V1zm12 5v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6h14z'/%3E%3C/svg%3E");
-
-    background-repeat: no-repeat;
-    background-size: contain;
-    pointer-events: none;
-}
-
-.number-wrapper {
-    position: relative;
-    width: 150px;
-}
-
-.number-wrapper input {
-    padding-right: 2.5rem;
-}
-
-.number-arrows {
-    position: absolute;
-    right: 0;
-    top: 0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.number-arrows button {
-    flex: 1;
-    border: none;
-    background: #0d6efd; /* couleur Bootstrap */
-    color: white;
-    font-size: 10px;
-    width: 30px;
-}
-
-.number-arrows button:hover {
-    background: #0b5ed7;
-}
-
-.table-hover tbody tr:hover td {
-    color: #F8F8FF !important;
-}
-
-.table-hover tbody tr:hover td input {
-    background: #F8F8FF !important;
 }
