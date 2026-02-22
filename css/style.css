@@ -294,7 +294,7 @@ body {
 }
 
 /* Type : Succès (Vert) */ 
-.lol .custom-alert.alert-success {
+.custom-alert.alert-success {
     background: #d4edda; 
     border-left: 8px solid #28a745;
 }
