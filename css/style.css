@@ -205,7 +205,7 @@ body {
 }
 
 /* Survol de ligne */
-.table tr:hover {
+table.table > tbody > tr:hover {
     background-color: #465670 !important;
 }
 

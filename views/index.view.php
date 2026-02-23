@@ -173,6 +173,48 @@
                 transform: translate(-50%, -50%);
             }
         }
+
+        /* Breakpoint personnalisé 1024px pour le hamburger */
+        @media (min-width: 1024px) {
+            .show-below-1024  { display: none !important; }
+            .show-above-1024  { display: flex !important; }
+        }
+        @media (max-width: 1023px) {
+            .show-below-1024  { display: block !important; }
+            .show-above-1024  { display: none !important; }
+        }
+
+        /* ===== BOUTON HAMBURGER ANIMÉ ===== */
+        .bars {
+            width: 24px;
+            cursor: pointer;
+            display: block;
+        }
+        .bars .line {
+            fill: none;
+            stroke: #fff;
+            stroke-width: 4;
+            stroke-linecap: square;
+            transition: stroke-dasharray 400ms, stroke-dashoffset 400ms;
+        }
+        .bars .line.top    { stroke-dasharray: 40 172; }
+        .bars .line.middle { stroke-dasharray: 40 111; }
+        .bars .line.bottom { stroke-dasharray: 40 172; }
+        .bars.active .top    { stroke-dashoffset: -132px; }
+        .bars.active .middle { stroke-dashoffset: -71px; }
+        .bars.active .bottom { stroke-dashoffset: -132px; }
+
+        .btn-hamburger {
+            background-color: var(--color-primary);
+            border: none;
+            border-radius: 6px;
+            padding: 6px 10px;
+            line-height: 0;
+            cursor: pointer;
+        }
+        .btn-hamburger:hover {
+            background-color: var(--color-primary-hover);
+        }
     </style>
 </head>
 <body 
@@ -213,7 +255,8 @@
                 <div class="card">
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <h2 class="font-bold"><a href="./" class="title-link">Liste des Commandes</a></h2>
-                        <div class="d-flex align-items-center gap-2">
+                        <!-- Boutons visibles au dessus de 1024px -->
+                        <div class="show-above-1024 align-items-center gap-2">
                             <a href="nouvelle" class="btn btn-primary">
                                 <i class="bi bi-plus-lg"></i> Nouveau
                             </a>
@@ -223,6 +266,31 @@
                                 <i class="bi bi-trash"></i>
                                 Supprimer (<span id="nb-selection">0</span>)
                             </button>
+                        </div>
+
+                        <!-- Menu hamburger visible en dessous de 1024px -->
+                        <div class="show-below-1024 dropdown">
+                            <button class="btn-hamburger" id="hamburger-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <svg class="bars" id="hamburger-svg" viewBox="0 0 100 100">
+                                    <path class="line top"    d="m 30,33 h 40 c 13.100415,0 14.380204,31.80258 6.899646,33.421777 -24.612039,5.327373 9.016154,-52.337577 -12.75751,-30.563913 l -28.284272,28.284272"></path>
+                                    <path class="line middle" d="m 70,50 c 0,0 -32.213436,0 -40,0 -7.786564,0 -6.428571,-4.640244 -6.428571,-8.571429 0,-5.895471 6.073743,-11.783399 12.286435,-5.570707 6.212692,6.212692 28.284272,28.284272 28.284272,28.284272"></path>
+                                    <path class="line bottom" d="m 69.575405,67.073826 h -40 c -13.100415,0 -14.380204,-31.80258 -6.899646,-33.421777 24.612039,-5.327373 -9.016154,52.337577 12.75751,30.563913 l 28.284272,-28.284272"></path>
+                                </svg>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a href="nouvelle" class="dropdown-item">
+                                        <i class="bi bi-plus-lg icon-primary icons"></i> Nouveau
+                                    </a>
+                                </li>
+                                <li id="btn-supprimer-selection-mobile" class="d-none">
+                                    <hr class="dropdown-divider">
+                                    <button class="dropdown-item text-danger" onclick="confirmerSuppressionSelection()">
+                                        <i class="bi bi-trash icons"></i>
+                                        Supprimer (<span id="nb-selection-mobile">0</span>)
+                                    </button>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     
@@ -281,7 +349,7 @@
     </div>
 
     <footer class="text-center text-light py-3 mt-5">
-        <small>Version 2.1.2</small>
+        <small>Version 2.1.21</small>
     </footer>
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -301,11 +369,24 @@
             const nb    = getChecked().length;
             const total = document.querySelectorAll('.check-commande').length;
 
+            // Bouton desktop
             if (nb > 0) {
                 btnSuppr.classList.remove('d-none');
                 nbSelection.textContent = nb;
             } else {
                 btnSuppr.classList.add('d-none');
+            }
+
+            // Bouton mobile (dropdown)
+            const btnSupprMobile = document.getElementById('btn-supprimer-selection-mobile');
+            const nbSelectionMobile = document.getElementById('nb-selection-mobile');
+            if (btnSupprMobile) {
+                if (nb > 0) {
+                    btnSupprMobile.classList.remove('d-none');
+                    nbSelectionMobile.textContent = nb;
+                } else {
+                    btnSupprMobile.classList.add('d-none');
+                }
             }
 
             checkAll.checked       = nb === total && total > 0;
@@ -434,6 +515,14 @@
         // TÉLÉCHARGEMENT AUTO
         // ══════════════════════════════════════════════════════════════
 
+
+        // Synchronisation de l'animation hamburger avec le dropdown Bootstrap
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const hamburgerSvg = document.getElementById('hamburger-svg');
+        if (hamburgerBtn && hamburgerSvg) {
+            hamburgerBtn.addEventListener('shown.bs.dropdown',  () => hamburgerSvg.classList.add('active'));
+            hamburgerBtn.addEventListener('hidden.bs.dropdown', () => hamburgerSvg.classList.remove('active'));
+        }
         window.addEventListener('DOMContentLoaded', function () {
             const urlParams    = new URLSearchParams(window.location.search);
             const downloadFile = urlParams.get('download');
