@@ -537,3 +537,177 @@ table.table > tbody > tr:hover {
     font-size: 22px;
     line-height: 40px;
 }
+
+
+/* =====================================================
+   13. MODAL DE CONFIRMATION PERSONNALISÉE (index)
+   ===================================================== */
+
+.custom-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 9998;
+    animation: fadeIn 0.3s ease;
+}
+
+.custom-modal {
+    display: none;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    max-width: 500px;
+    width: 90%;
+    animation: slideDown 0.3s ease;
+}
+
+.custom-modal.show,
+.custom-modal-overlay.show {
+    display: block;
+}
+
+/* En-tête */
+.modal-header-custom {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.modal-header-custom.danger  { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); }
+.modal-header-custom.warning { background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%); }
+.modal-header-custom i  { font-size: 28px; }
+.modal-header-custom h5 { margin: 0; font-weight: 600; font-size: 20px; }
+
+/* Corps */
+.modal-body-custom {
+    padding: 24px;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Liste dans le corps */
+.modal-list {
+    background: #f8f9fa;
+    border-left: 4px solid #667eea;
+    padding: 16px;
+    border-radius: 6px;
+    margin: 16px 0;
+    max-height: 200px;
+    overflow-y: auto;
+}
+.modal-list-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #dee2e6;
+}
+.modal-list-item:last-child { border-bottom: none; }
+.modal-list-item i { color: #667eea; margin-right: 8px; }
+
+/* Pied de page */
+.modal-footer-custom {
+    padding: 16px 24px;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* Boutons */
+.modal-btn {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 15px;
+}
+.modal-btn-cancel { background: #6c757d; color: white; }
+.modal-btn-cancel:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+.modal-btn-confirm {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+}
+.modal-btn-confirm:hover {
+    background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+.modal-btn-confirm.warning {
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+    color: #333;
+}
+.modal-btn-confirm.warning:hover {
+    background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+@keyframes slideDown {
+    from { opacity: 0; transform: translate(-50%, -60%); }
+    to   { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+
+/* =====================================================
+   14. HAMBURGER & RESPONSIVE HEADER (index)
+   ===================================================== */
+
+/* Breakpoint personnalisé 1024px */
+@media (min-width: 1024px) {
+    .show-below-1024 { display: none !important; }
+    .show-above-1024 { display: flex !important; }
+}
+@media (max-width: 1023px) {
+    .show-below-1024 { display: block !important; }
+    .show-above-1024 { display: none !important; }
+}
+
+/* SVG hamburger animé */
+.bars {
+    width: 24px;
+    cursor: pointer;
+    display: block;
+}
+.bars .line {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 4;
+    stroke-linecap: square;
+    transition: stroke-dasharray 400ms, stroke-dashoffset 400ms;
+}
+.bars .line.top    { stroke-dasharray: 40 172; }
+.bars .line.middle { stroke-dasharray: 40 111; }
+.bars .line.bottom { stroke-dasharray: 40 172; }
+.bars.active .top    { stroke-dashoffset: -132px; }
+.bars.active .middle { stroke-dashoffset: -71px; }
+.bars.active .bottom { stroke-dashoffset: -132px; }
+
+/* Bouton wrapper du hamburger */
+.btn-hamburger {
+    background-color: var(--color-primary);
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    line-height: 0;
+    cursor: pointer;
+}
+.btn-hamburger:hover {
+    background-color: var(--color-primary-hover);
+}
