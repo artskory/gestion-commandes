@@ -222,5 +222,6 @@
             }
         }
     </script>
+    <script>window.name = "gestion_commandes";</script>
 </body>
 </html>

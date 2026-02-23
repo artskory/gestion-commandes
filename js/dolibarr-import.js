@@ -1,185 +1,132 @@
 /**
  * Script d'import depuis Dolibarr
- * Version 1.31
- * 
- * Permet d'importer automatiquement les données d'une commande Dolibarr
- * via le bookmarklet
+ * Version 1.41
+ *
+ * Deux cas gérés :
+ *  1. L'onglet gestion-commandes était ouvert sur une AUTRE page (index, édition…)
+ *     → le bookmarklet navigue vers nouvelle-commande.php
+ *     → au chargement, checkPendingData() lit le localStorage et remplit le formulaire
+ *
+ *  2. L'onglet était DÉJÀ sur nouvelle-commande.php
+ *     → window.open navigue vers la même URL (rechargement)
+ *     → idem : checkPendingData() au chargement
+ *
+ * Dans les deux cas, window.name = "gestion_commandes" (défini dans chaque vue)
+ * permet au bookmarklet de retrouver l'onglet existant via window.open(url, 'gestion_commandes').
  */
 
-// Configuration
 const DOLIBARR_IMPORT = {
-    // Stockage temporaire des données
+
     storageKey: 'dolibarr_import_data',
-    
-    /**
-     * Initialiser le système d'import
-     */
-    init: function() {
-        console.log('Dolibarr Import: Initialisation...');
-        
-        // Vérifier si des données sont en attente
+
+    // ─────────────────────────────────────────
+    // Initialisation
+    // ─────────────────────────────────────────
+    init: function () {
+        // Lire les données en attente au chargement de la page
         this.checkPendingData();
     },
-    
-    /**
-     * Vérifier s'il y a des données en attente dans le localStorage
-     */
-    checkPendingData: function() {
-        const data = localStorage.getItem(this.storageKey);
-        if (data) {
-            try {
-                const importData = JSON.parse(data);
-                console.log('Données Dolibarr trouvées:', importData);
-                
-                // Remplir le formulaire
-                this.fillForm(importData);
-                
-                // Nettoyer le storage immédiatement
-                localStorage.removeItem(this.storageKey);
-                
-                // Afficher un message de succès
-                this.showSuccess('✅ Données importées depuis Dolibarr avec succès !');
-            } catch (e) {
-                console.error('Erreur lors du parsing des données:', e);
-                this.showError('Erreur lors de l\'import des données');
-                // Nettoyer en cas d'erreur
-                localStorage.removeItem(this.storageKey);
-            }
+
+    // ─────────────────────────────────────────
+    // Lecture des données au chargement
+    // ─────────────────────────────────────────
+    checkPendingData: function () {
+        const raw = localStorage.getItem(this.storageKey);
+        if (!raw) return;
+
+        try {
+            const data = JSON.parse(raw);
+            localStorage.removeItem(this.storageKey);
+            this.fillForm(data);
+            this.showSuccess('✅ Données importées depuis Dolibarr avec succès !');
+        } catch (e) {
+            console.error('Erreur parsing données:', e);
+            this.showError("Erreur lors de l'import des données");
+            localStorage.removeItem(this.storageKey);
         }
     },
-    
-    /**
-     * Remplir le formulaire avec les données Dolibarr
-     */
-    fillForm: function(data) {
-        console.log('Remplissage du formulaire avec:', data);
-        
-        // Mapping des champs
+
+    // ─────────────────────────────────────────
+    // Remplissage du formulaire
+    // ─────────────────────────────────────────
+    fillForm: function (data) {
         const fieldMapping = {
-            'societe': data.societe || data.client,
-            'destinataire': data.destinataire,
-            'n_commande_client': data.numero_commande,
-            'reference_article': data.reference_article,
-            'date_commande': data.date_commande,
-            'n_devis': data.numero_devis,
+            'societe':             data.societe || data.client,
+            'destinataire':        data.destinataire,
+            'n_commande_client':   data.numero_commande,
+            'reference_article':   data.reference_article,
+            'date_commande':       data.date_commande,
+            'n_devis':             data.numero_devis,
             'quantite_par_modele': data.quantite,
-            'dossier_suivi_par': data.suivi_par
+            'dossier_suivi_par':   data.suivi_par
         };
-        
-        // Remplir chaque champ
+
         Object.keys(fieldMapping).forEach(fieldId => {
             const value = fieldMapping[fieldId];
-            if (value) {
-                const field = document.getElementById(fieldId);
-                if (field) {
-                    field.value = value;
-                    // Déclencher l'événement change pour les éventuels listeners
-                    field.dispatchEvent(new Event('change', { bubbles: true }));
-                    console.log(`Champ ${fieldId} rempli avec: ${value}`);
-                    
-                    // Animation visuelle
-                    field.classList.add('border-success');
-                    setTimeout(() => field.classList.remove('border-success'), 2000);
-                }
-            }
+            if (!value) return;
+            const field = document.getElementById(fieldId);
+            if (!field) return;
+
+            field.value = value;
+            field.dispatchEvent(new Event('change', { bubbles: true }));
+            field.classList.add('border-success');
+            setTimeout(() => field.classList.remove('border-success'), 2000);
         });
-        
-        // Gérer le délai de fabrication
-        if (data.delai_fabrication) {
-            this.fillDelai(data.delai_fabrication);
-        }
-        
-        // Scroll vers le haut pour voir le formulaire
+
+        if (data.delai_fabrication) this.fillDelai(data.delai_fabrication);
+
         window.scrollTo({ top: 0, behavior: 'smooth' });
     },
-    
-    /**
-     * Remplir le champ délai de fabrication
-     */
-    fillDelai: function(delai) {
-        console.log('Remplissage du délai:', delai);
-        
-        // Si c'est au format "5 jours ouvrés à validation du BAT"
-        // Extraire le nombre de jours
-        const match = delai.match(/(\d+)\s*jours?/i);
-        if (match) {
-            const jours = match[1];
+
+    // ─────────────────────────────────────────
+    // Remplissage du délai de fabrication
+    // ─────────────────────────────────────────
+    fillDelai: function (delai) {
+        const matchJours = delai.match(/(\d+)\s*jours?/i);
+        if (matchJours) {
             const delaiListe = document.getElementById('delais_liste');
-            if (delaiListe) {
-                const optionValue = 'J+' + jours;
-                // Vérifier si l'option existe
-                const option = Array.from(delaiListe.options).find(opt => opt.value === optionValue);
-                if (option) {
-                    delaiListe.value = optionValue;
-                    delaiListe.classList.add('border-success');
-                    setTimeout(() => delaiListe.classList.remove('border-success'), 2000);
-                    console.log(`Délai sélectionné: ${optionValue}`);
-                }
+            if (!delaiListe) return;
+            const optionValue = 'J+' + matchJours[1];
+            const option = Array.from(delaiListe.options).find(o => o.value === optionValue);
+            if (option) {
+                delaiListe.value = optionValue;
+                delaiListe.classList.add('border-success');
+                setTimeout(() => delaiListe.classList.remove('border-success'), 2000);
             }
+            return;
         }
-        // Si c'est une date au format DD/MM/YYYY
-        else if (delai.match(/\d{2}\/\d{2}\/\d{4}/)) {
+
+        if (/\d{2}\/\d{2}\/\d{4}/.test(delai)) {
             const parts = delai.split('/');
-            const dateISO = `${parts[2]}-${parts[1]}-${parts[0]}`;
             const delaiDate = document.getElementById('delais_date');
             if (delaiDate) {
-                delaiDate.value = dateISO;
+                delaiDate.value = `${parts[2]}-${parts[1]}-${parts[0]}`;
                 delaiDate.classList.add('border-success');
                 setTimeout(() => delaiDate.classList.remove('border-success'), 2000);
-                console.log(`Date de délai sélectionnée: ${dateISO}`);
             }
         }
     },
-    
-    /**
-     * Afficher un message de succès
-     */
-    showSuccess: function(message) {
-        // Créer une alerte Bootstrap
-        const alertDiv = document.createElement('div');
-        alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
-        alertDiv.style.zIndex = '9999';
-        alertDiv.style.minWidth = '400px';
-        alertDiv.innerHTML = `
-            <strong><i class="bi bi-check-circle-fill"></i> ${message}</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        document.body.appendChild(alertDiv);
-        
-        // Auto-fermer après 5 secondes
+
+    // ─────────────────────────────────────────
+    // Alertes
+    // ─────────────────────────────────────────
+    showSuccess: function (message) { this._showAlert(message, 'success', 5000); },
+    showError:   function (message) { this._showAlert(message, 'danger',  7000); },
+
+    _showAlert: function (message, type, delay) {
+        const icon = type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill';
+        const div  = document.createElement('div');
+        div.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
+        div.style.cssText = 'z-index:9999;min-width:400px';
+        div.innerHTML = `<strong><i class="bi ${icon}"></i> ${message}</strong>
+                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
+        document.body.appendChild(div);
         setTimeout(() => {
-            alertDiv.classList.remove('show');
-            setTimeout(() => alertDiv.remove(), 150);
-        }, 5000);
-    },
-    
-    /**
-     * Afficher un message d'erreur
-     */
-    showError: function(message) {
-        // Créer une alerte Bootstrap
-        const alertDiv = document.createElement('div');
-        alertDiv.className = 'alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
-        alertDiv.style.zIndex = '9999';
-        alertDiv.style.minWidth = '400px';
-        alertDiv.innerHTML = `
-            <strong><i class="bi bi-exclamation-triangle-fill"></i> ${message}</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        document.body.appendChild(alertDiv);
-        
-        // Auto-fermer après 7 secondes
-        setTimeout(() => {
-            alertDiv.classList.remove('show');
-            setTimeout(() => alertDiv.remove(), 150);
-        }, 7000);
+            div.classList.remove('show');
+            setTimeout(() => div.remove(), 150);
+        }, delay);
     }
 };
 
-// Initialiser au chargement de la page
-document.addEventListener('DOMContentLoaded', function() {
-    DOLIBARR_IMPORT.init();
-});
-
-// Exporter pour utilisation externe si besoin
+document.addEventListener('DOMContentLoaded', () => DOLIBARR_IMPORT.init());
 window.DOLIBARR_IMPORT = DOLIBARR_IMPORT;
