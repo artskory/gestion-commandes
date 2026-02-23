@@ -173,13 +173,14 @@ class CommandeController {
         
         // Si pas d'erreurs, mettre à jour la commande
         if (empty($this->errors)) {
-            // Si rechargement demandé, supprimer l'ancien CSV et incrémenter la version
+            // Si rechargement demandé, supprimer l'ancien CSV, incrémenter la version et mettre la date à aujourd'hui
             if ($faire_rechargement) {
                 $ancienCsv = 'downloads/' . $this->commande->n_commande_client . '.csv';
                 if (file_exists($ancienCsv)) {
                     unlink($ancienCsv);
                 }
                 $this->commande->n_commande_client = $this->commande->incrementerVersion($this->commande->n_commande_client);
+                $this->commande->date_commande = date('Y-m-d');
             }
             
             if ($this->commande->update()) {

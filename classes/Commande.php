@@ -82,16 +82,20 @@ class Commande {
     }
     
     /**
-     * Mettre à jour le numéro de commande avec version
+     * Mettre à jour le numéro de commande avec version et la date
      */
-    public function updateNumeroCommande($id, $nouveau_numero) {
+    public function updateNumeroCommande($id, $nouveau_numero, $date_commande = null) {
         $query = "UPDATE " . $this->table . " 
-                  SET n_commande_client = :nouveau_numero 
+                  SET n_commande_client = :nouveau_numero
+                  " . ($date_commande !== null ? ", date_commande = :date_commande" : "") . "
                   WHERE id = :id";
         
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':nouveau_numero', $nouveau_numero);
-        $stmt->bindParam(':id', $id);
+        $stmt->bindValue(':nouveau_numero', $nouveau_numero);
+        $stmt->bindValue(':id', $id);
+        if ($date_commande !== null) {
+            $stmt->bindValue(':date_commande', $date_commande);
+        }
         
         return $stmt->execute();
     }
@@ -191,17 +195,19 @@ class Commande {
         
         $stmt = $this->conn->prepare($query);
         
-        $stmt->bindParam(':id', $this->id);
-        $stmt->bindParam(':societe', $this->societe);
-        $stmt->bindParam(':destinataire', $this->destinataire);
-        $stmt->bindParam(':n_commande_client', $this->n_commande_client);
-        $stmt->bindParam(':reference_article', $this->reference_article);
-        $stmt->bindParam(':date_commande', $this->date_commande);
-        $stmt->bindParam(':n_devis', $this->n_devis);
-        $stmt->bindParam(':quantite_par_modele', $this->quantite_par_modele);
-        $stmt->bindParam(':dossier_suivi_par', $this->dossier_suivi_par);
-        $stmt->bindParam(':delais_fabrication', $this->delais_fabrication);
-        $stmt->bindParam(':fichier_statut', $this->fichier_statut);
+        // bindValue copie la valeur au moment de l'appel (contrairement à bindParam
+        // qui lie par référence et peut causer des problèmes avec les propriétés d'objet)
+        $stmt->bindValue(':id',                   $this->id);
+        $stmt->bindValue(':societe',              $this->societe);
+        $stmt->bindValue(':destinataire',         $this->destinataire);
+        $stmt->bindValue(':n_commande_client',    $this->n_commande_client);
+        $stmt->bindValue(':reference_article',    $this->reference_article);
+        $stmt->bindValue(':date_commande',        $this->date_commande);
+        $stmt->bindValue(':n_devis',              $this->n_devis);
+        $stmt->bindValue(':quantite_par_modele',  $this->quantite_par_modele, PDO::PARAM_INT);
+        $stmt->bindValue(':dossier_suivi_par',    $this->dossier_suivi_par);
+        $stmt->bindValue(':delais_fabrication',   $this->delais_fabrication);
+        $stmt->bindValue(':fichier_statut',       $this->fichier_statut);
         
         return $stmt->execute();
     }

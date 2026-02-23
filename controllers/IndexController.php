@@ -124,12 +124,14 @@ class IndexController {
             
             // Incrémenter la version
             $nouveau_numero = $this->commande->incrementerVersion($data['n_commande_client']);
+            $aujourd_hui    = date('Y-m-d');
             
-            // Mettre à jour en base de données
-            $this->commande->updateNumeroCommande($id, $nouveau_numero);
+            // Mettre à jour le numéro de version ET la date en base de données
+            $this->commande->updateNumeroCommande($id, $nouveau_numero, $aujourd_hui);
             
-            // Recharger les données mises à jour
+            // Mettre à jour $data pour le CSV
             $data['n_commande_client'] = $nouveau_numero;
+            $data['date_commande']     = $aujourd_hui;
             
             // Générer le CSV (sans forcer le téléchargement)
             $filepath = $this->csvExporter->exportCommande($data, $nouveau_numero);
