@@ -20,10 +20,6 @@ include 'views/layout/header.php';
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card" style="position: relative; overflow: visible;">
-                    <a href="https://www.dolibarr.org" target="_blank"
-                       class="btn btn-warning btn-vertical">
-                        Bookmarklet
-                    </a>
                     <form method="POST" action="">
                         <div class="card-header d-flex align-items-center justify-content-between">
                             <h2 class="font-bold">Nouvelle Commande</h2>
@@ -51,10 +47,8 @@ include 'views/layout/header.php';
 
                                     <div class="mb-3">
                                         <i class="bi bi-calendar icon-primary icons"></i><label for="date_commande" class="form-label font-medium">Date</label>
-                                        <div class="date-wrapper">
-                                            <input type="date" class="form-control text-input" id="date_commande" name="date_commande"
-                                                   value="<?php echo isset($_POST['date_commande']) ? htmlspecialchars($_POST['date_commande']) : date('Y-m-d'); ?>">
-                                        </div>
+                                        <input type="date" class="form-control text-input date-wrapper" id="date_commande" name="date_commande"
+                                               value="<?php echo isset($_POST['date_commande']) ? htmlspecialchars($_POST['date_commande']) : date('Y-m-d'); ?>">
                                     </div>
 
                                     <div class="mb-3">
@@ -133,6 +127,9 @@ include 'views/layout/header.php';
 
                         </div>
                     </form>
+                    <a href="dolibarr-bookmarklet.html" class="btn btn-primary btn-vertical" target="_blank">
+                        <i class="bi bi-bookmark-star"></i> Installer le Bookmarklet
+                    </a>
                 </div>
             </div>
         </div>

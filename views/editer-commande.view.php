@@ -48,10 +48,8 @@ include 'views/layout/header.php';
 
                                     <div class="mb-3">
                                         <i class="bi bi-calendar icon-primary icons"></i><label for="date_commande" class="form-label font-medium">Date</label>
-                                        <div class="date-wrapper">
                                             <input type="date" class="form-control text-input" id="date_commande" name="date_commande"
                                                    value="<?php echo isset($_POST['date_commande']) ? htmlspecialchars($_POST['date_commande']) : htmlspecialchars($this->data['date_commande']); ?>">
-                                        </div>
                                     </div>
 
                                     <div class="mb-3">
