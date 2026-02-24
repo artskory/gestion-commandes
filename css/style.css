@@ -215,12 +215,17 @@ table.table > tbody > tr:hover {
 }
 
 /* Input dans une cellule survolée */
-.table-hover tbody tr:hover td input {
-    background: var(--color-white-soft) !important;
+.table-hover tbody tr:hover td input:not(:checked) {
+    background-color: var(--color-white-soft) !important;
 }
 
+/* Empecher les boutons de passé l'un au dessus de l'autre dans la cellule */
+.table td.actions-col {
+    white-space: nowrap;
+}
 
-/* =====================================================
+/* ==
+===================================================
    9. FORMULAIRES
    ===================================================== */
 
@@ -300,11 +305,6 @@ table.table > tbody > tr:hover {
 .form-check-input:checked {
     background-color: var(--color-primary);
     border-color: var(--color-primary);
-}
-
-/* Fond neige au survol */
-.form-check-input:hover {
-    --bs-form-check-bg: snow !important;
 }
 
 /* Espacement du toggle switch */

@@ -174,7 +174,7 @@ include 'views/layout/header.php';
                                             <td><?php echo htmlspecialchars($cmd['id']); ?></td>
                                             <td><?php echo htmlspecialchars($cmd['societe']); ?></td>
                                             <td><?php echo htmlspecialchars($cmd['n_commande_client']); ?></td>
-                                            <td>
+                                            <td class="actions-col">
                                                 <a href="#"
                                                    class="btn btn-sm bg-warning-subtle icon-warning me-1"
                                                    title="Rechargement"
