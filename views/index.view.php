@@ -1,35 +1,94 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Commandes</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" type="image/png" href="image/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="image/favicon.svg" />
-    <link rel="shortcut icon" href="image/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="image/apple-touch-icon.png" />
-    <link rel="manifest" href="image/site.webmanifest" />
-</head>
-<body 
-      <?php if ($this->success): 
-          $msg = '';
-          if ($this->success == 'creation') $msg = 'Commande créée avec succès !';
-          elseif ($this->success == 'rechargement') $msg = 'Nouvelle version générée avec succès !';
-          elseif ($this->success == 'suppression') $msg = $this->count . ' commande(s) de plus de 7 jours supprimée(s) avec succès !';
-          elseif ($this->success == 'suppression_individuelle') $msg = 'Commande(s) supprimée(s) avec succès !';
-          elseif ($this->success == 'modification') $msg = 'Commande modifiée avec succès !';
-          echo 'data-success-msg="' . htmlspecialchars($msg, ENT_QUOTES, 'UTF-8') . '"';
-      endif; ?>
-      <?php if ($this->error): 
-          $msg = '';
-          if ($this->error == 'suppression') $msg = 'Erreur lors de la suppression de la commande.';
-          echo 'data-error-msg="' . htmlspecialchars($msg, ENT_QUOTES, 'UTF-8') . '"';
-      endif; ?>
->
+<?php
+// ─── Variables du layout ──────────────────────────────────────────────────
+$pageTitle = 'Gestion des Commandes';
+$basePath  = '';
+
+// Construction de l'attribut <body>
+$bodyAttr = '';
+if ($this->success) {
+    $msg = '';
+    if      ($this->success == 'creation')                $msg = 'Commande créée avec succès !';
+    elseif  ($this->success == 'rechargement')            $msg = 'Nouvelle version générée avec succès !';
+    elseif  ($this->success == 'suppression')             $msg = $this->count . ' commande(s) de plus de 7 jours supprimée(s) avec succès !';
+    elseif  ($this->success == 'suppression_individuelle') $msg = 'Commande(s) supprimée(s) avec succès !';
+    elseif  ($this->success == 'modification')            $msg = 'Commande modifiée avec succès !';
+    $bodyAttr .= 'data-success-msg="' . htmlspecialchars($msg, ENT_QUOTES, 'UTF-8') . '"';
+}
+if ($this->error) {
+    $msg = '';
+    if ($this->error == 'suppression') $msg = 'Erreur lors de la suppression de la commande.';
+    $bodyAttr .= ' data-error-msg="' . htmlspecialchars($msg, ENT_QUOTES, 'UTF-8') . '"';
+}
+
+// Script spécifique à index (checkboxes + téléchargement auto)
+$extraScripts = <<<'JS'
+<script>
+    const checkAll    = document.getElementById('check-all');
+    const btnSuppr    = document.getElementById('btn-supprimer-selection');
+    const nbSelection = document.getElementById('nb-selection');
+
+    function mettreAJourBouton() {
+        const nb    = getChecked().length;
+        const total = document.querySelectorAll('.check-commande').length;
+
+        if (nb > 0) {
+            btnSuppr.classList.remove('d-none');
+            nbSelection.textContent = nb;
+        } else {
+            btnSuppr.classList.add('d-none');
+        }
+
+        const btnSupprMobile    = document.getElementById('btn-supprimer-selection-mobile');
+        const nbSelectionMobile = document.getElementById('nb-selection-mobile');
+        if (btnSupprMobile) {
+            if (nb > 0) {
+                btnSupprMobile.classList.remove('d-none');
+                nbSelectionMobile.textContent = nb;
+            } else {
+                btnSupprMobile.classList.add('d-none');
+            }
+        }
+
+        checkAll.checked       = nb === total && total > 0;
+        checkAll.indeterminate = nb > 0 && nb < total;
+    }
+
+    checkAll.addEventListener('change', function () {
+        document.querySelectorAll('.check-commande').forEach(cb => {
+            cb.checked = this.checked;
+        });
+        mettreAJourBouton();
+    });
+
+    document.querySelectorAll('.check-commande').forEach(cb => {
+        cb.addEventListener('change', mettreAJourBouton);
+    });
+
+    window.addEventListener('DOMContentLoaded', function () {
+        const urlParams    = new URLSearchParams(window.location.search);
+        const downloadFile = urlParams.get('download');
+
+        if (downloadFile) {
+            const link    = document.createElement('a');
+            link.href     = 'downloads/' + downloadFile;
+            link.download = downloadFile;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        if (urlParams.has('success') || urlParams.has('error') || urlParams.has('count') || urlParams.has('download')) {
+            setTimeout(function () {
+                window.history.replaceState({}, document.title, './');
+            }, 1000);
+        }
+    });
+</script>
+JS;
+
+include 'views/layout/header.php';
+?>
+
     <!-- Modal de confirmation personnalisée -->
     <div class="custom-modal-overlay" id="modal-overlay"></div>
     <div class="custom-modal" id="custom-modal">
@@ -52,6 +111,7 @@
                 <div class="card">
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <h2 class="font-bold"><a href="./" class="title-link">Liste des Commandes</a></h2>
+
                         <!-- Boutons visibles au dessus de 1024px -->
                         <div class="show-above-1024 align-items-center gap-2">
                             <a href="nouvelle" class="btn btn-primary">
@@ -90,7 +150,7 @@
                             </ul>
                         </div>
                     </div>
-                    
+
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
@@ -112,21 +172,21 @@
                                             <td><?php echo htmlspecialchars($cmd['societe']); ?></td>
                                             <td><?php echo htmlspecialchars($cmd['n_commande_client']); ?></td>
                                             <td>
-                                                <a href="#" 
+                                                <a href="#"
                                                    class="btn btn-sm bg-warning-subtle icon-warning me-1"
                                                    title="Rechargement"
                                                    onclick="confirmerRechargement(event, <?php echo $cmd['id']; ?>);">
                                                     <i class="bi bi-arrow-clockwise"></i>
                                                 </a>
-                                                <a href="editer/<?php echo $cmd['id']; ?>" 
+                                                <a href="editer/<?php echo $cmd['id']; ?>"
                                                    class="btn btn-sm bg-primary-subtle icon-primary"
                                                    title="Éditer">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
                                             </td>
                                             <td>
-                                                <input type="checkbox" 
-                                                       class="form-check-input check-commande" 
+                                                <input type="checkbox"
+                                                       class="form-check-input check-commande"
                                                        value="<?php echo $cmd['id']; ?>"
                                                        data-nom="<?php echo htmlspecialchars($cmd['n_commande_client']); ?>">
                                             </td>
@@ -145,78 +205,4 @@
         </div>
     </div>
 
-    <footer class="text-center text-light py-3 mt-5">
-        <small>Version 2.1.23</small>
-    </footer>
-    
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/alert.js"></script>
-    <script>
-        const checkAll    = document.getElementById('check-all');
-        const btnSuppr    = document.getElementById('btn-supprimer-selection');
-        const nbSelection = document.getElementById('nb-selection');
-
-        function mettreAJourBouton() {
-            const nb    = getChecked().length;
-            const total = document.querySelectorAll('.check-commande').length;
-
-            // Bouton desktop
-            if (nb > 0) {
-                btnSuppr.classList.remove('d-none');
-                nbSelection.textContent = nb;
-            } else {
-                btnSuppr.classList.add('d-none');
-            }
-
-            // Bouton mobile (dropdown)
-            const btnSupprMobile = document.getElementById('btn-supprimer-selection-mobile');
-            const nbSelectionMobile = document.getElementById('nb-selection-mobile');
-            if (btnSupprMobile) {
-                if (nb > 0) {
-                    btnSupprMobile.classList.remove('d-none');
-                    nbSelectionMobile.textContent = nb;
-                } else {
-                    btnSupprMobile.classList.add('d-none');
-                }
-            }
-
-            checkAll.checked       = nb === total && total > 0;
-            checkAll.indeterminate = nb > 0 && nb < total;
-        }
-
-        checkAll.addEventListener('change', function () {
-            document.querySelectorAll('.check-commande').forEach(cb => {
-                cb.checked = this.checked;
-            });
-            mettreAJourBouton();
-        });
-
-        document.querySelectorAll('.check-commande').forEach(cb => {
-            cb.addEventListener('change', mettreAJourBouton);
-        });
-
-        // Téléchargement automatique + nettoyage URL
-        window.addEventListener('DOMContentLoaded', function () {
-            const urlParams    = new URLSearchParams(window.location.search);
-            const downloadFile = urlParams.get('download');
-
-            if (downloadFile) {
-                const link    = document.createElement('a');
-                link.href     = 'downloads/' + downloadFile;
-                link.download = downloadFile;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-
-            if (urlParams.has('success') || urlParams.has('error') || urlParams.has('count') || urlParams.has('download')) {
-                setTimeout(function () {
-                    window.history.replaceState({}, document.title, './');
-                }, 1000);
-            }
-        });
-    </script>
-</body>
-</html>
+<?php include 'views/layout/footer.php'; ?>
