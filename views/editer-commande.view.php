@@ -23,11 +23,35 @@ include 'views/layout/header.php';
                     <form method="POST" action="">
                         <div class="card-header d-flex align-items-center justify-content-between">
                             <h2 class="font-bold">Éditer Commande</h2>
-                            <div>
-                                <button type="submit" name="action" value="sauvegarder" class="btn btn-primary me-2"><i class="bi bi-floppy icons"></i>Enregistrer</button>
-                                <button type="submit" name="action" value="recharger"   class="btn btn-warning me-2"><i class="bi bi-arrow-clockwise icons"></i>Recharger</button>
-                                <a href="../" class="btn btn-danger me-2"><i class="bi bi-x-circle icons"></i>Annuler</a>
+                            <!-- Boutons visibles au dessus de 1024px -->
+                            <div class="show-above-1024 align-items-center gap-2">
+                                    <button type="submit" name="action" value="sauvegarder" class="btn btn-primary me-2"><i class="bi bi-floppy icons"></i>Enregistrer</button>
+                                    <button type="submit" name="action" value="recharger"   class="btn btn-warning me-2"><i class="bi bi-arrow-clockwise icons"></i>Recharger</button>
+                                    <a href="../" class="btn btn-danger me-2"><i class="bi bi-x-circle icons"></i>Annuler</a>
                             </div>
+
+                            <!-- Menu hamburger visible en dessous de 1024px -->
+                            <div class="show-below-1024 dropdown">
+                                <button class="btn-hamburger" id="hamburger-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <svg class="bars" id="hamburger-svg" viewBox="0 0 100 100">
+                                        <path class="line top"    d="m 30,33 h 40 c 13.100415,0 14.380204,31.80258 6.899646,33.421777 -24.612039,5.327373 9.016154,-52.337577 -12.75751,-30.563913 l -28.284272,28.284272"></path>
+                                        <path class="line middle" d="m 70,50 c 0,0 -32.213436,0 -40,0 -7.786564,0 -6.428571,-4.640244 -6.428571,-8.571429 0,-5.895471 6.073743,-11.783399 12.286435,-5.570707 6.212692,6.212692 28.284272,28.284272 28.284272,28.284272"></path>
+                                        <path class="line bottom" d="m 69.575405,67.073826 h -40 c -13.100415,0 -14.380204,-31.80258 -6.899646,-33.421777 24.612039,-5.327373 -9.016154,52.337577 12.75751,30.563913 l 28.284272,-28.284272"></path>
+                                    </svg>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <button type="submit" name="action" value="sauvegarder" class="btn btn-primary"><i class="bi bi-floppy icons"></i>Enregistrer</button>
+                                    </li>
+                                    <li>
+                                        <button type="submit" name="action" value="recharger"   class="btn btn-warning mt-2"><i class="bi bi-arrow-clockwise icons"></i>Recharger</button>
+                                    </li>
+                                    <li>
+                                        <a href="../" class="btn btn-danger mt-2"><i class="bi bi-x-circle icons"></i>Annuler</a>
+                                    </li>
+                                </ul>
+                            </div>
+
                         </div>
                         <div class="card-body">
 

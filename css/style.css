@@ -396,6 +396,9 @@ table.table > tbody > tr:hover {
     border-radius: 0 0 7px 7px;
 }
 
+.dropdown-menu {
+    --bs-dropdown-padding-x: 1rem !important;
+}
 
 /* =====================================================
    11. ALERTES BOOTSTRAP (surcharge marge)
