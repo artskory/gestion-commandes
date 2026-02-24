@@ -44,16 +44,15 @@ include 'views/layout/header.php';
                                         <button type="submit" name="action" value="sauvegarder" class="btn btn-primary"><i class="bi bi-floppy icons"></i>Enregistrer</button>
                                     </li>
                                     <li>
-                                        <button type="submit" name="action" value="recharger"   class="btn btn-warning mt-2"><i class="bi bi-arrow-clockwise icons"></i>Recharger</button>
+                                        <button type="submit" name="action" value="recharger"   class="btn btn-warning"><i class="bi bi-arrow-clockwise icons"></i>Recharger</button>
                                     </li>
                                     <li>
-                                        <a href="../" class="btn btn-danger mt-2"><i class="bi bi-x-circle icons"></i>Annuler</a>
+                                        <a href="../" class="btn btn-danger"><i class="bi bi-x-circle icons"></i>Annuler</a>
                                     </li>
                                 </ul>
                             </div>
 
                         </div>
-                        
                         <div class="card-body">
 
                             <div class="row">
@@ -73,7 +72,7 @@ include 'views/layout/header.php';
 
                                     <div class="mb-3">
                                         <i class="bi bi-calendar icon-primary icons"></i><label for="date_commande" class="form-label font-medium">Date</label>
-                                            <input type="date" class="form-control text-input" id="date_commande" name="date_commande"
+                                            <input type="date" class="form-control text-input date-wrapper" id="date_commande" name="date_commande"
                                                    value="<?php echo isset($_POST['date_commande']) ? htmlspecialchars($_POST['date_commande']) : htmlspecialchars($this->data['date_commande']); ?>">
                                     </div>
 

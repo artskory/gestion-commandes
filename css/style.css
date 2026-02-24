@@ -321,7 +321,6 @@ table.table > tbody > tr:hover {
 /* --- Wrapper champ date (icône calendrier personnalisée) --- */
 .date-wrapper {
     position: relative;
-    display: inline-block;
 }
 
 .date-wrapper input {
