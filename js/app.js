@@ -13,6 +13,54 @@ window.name = 'gestion_commandes';
 
 
 // ═══════════════════════════════════════════════════════════════
+// HEARTBEAT — Toutes les pages signalent leur présence
+// Permet au bookmarklet de savoir si un onglet est déjà ouvert
+// ═══════════════════════════════════════════════════════════════
+
+(function () {
+    const key   = 'gestion_commandes_alive';
+    const write = () => localStorage.setItem(key, Date.now());
+    write();
+    setInterval(write, 1000);
+    window.addEventListener('beforeunload', () => localStorage.removeItem(key));
+})();
+
+
+
+
+
+// ═══════════════════════════════════════════════════════════════
+// BROADCAST CHANNEL — Réception des données Dolibarr
+// Actif sur TOUTES les pages.
+// - Si on est sur nouvelle-commande : délègue à DOLIBARR_IMPORT
+// - Sinon : stocke en localStorage et navigue vers nouvelle-commande
+// ═══════════════════════════════════════════════════════════════
+
+(function () {
+    const bc              = new BroadcastChannel('dolibarr_import_channel');
+    const storageKey      = 'dolibarr_import_data';
+    const nouvellePageUrl = 'nouvelle-commande.php';
+
+    bc.onmessage = function (e) {
+        if (!e.data) return;
+
+        // Détecter si on est sur la page nouvelle-commande
+        const isNouvelleCommande = window.location.pathname.includes('nouvelle-commande')
+                                || window.location.pathname.endsWith('nouvelle');
+
+        if (isNouvelleCommande && window.DOLIBARR_IMPORT) {
+            // Déjà sur la bonne page → remplir directement
+            window.DOLIBARR_IMPORT.fillForm(e.data);
+            window.DOLIBARR_IMPORT.showSuccess('✅ Données importées depuis Dolibarr avec succès !');
+        } else {
+            // Sur une autre page → stocker et naviguer
+            localStorage.setItem(storageKey, JSON.stringify(e.data));
+            window.location.href = nouvellePageUrl;
+        }
+    };
+})();
+
+// ═══════════════════════════════════════════════════════════════
 // DÉLAIS DE FABRICATION (nouvelle-commande + editer-commande)
 // Assure la cohérence entre la liste déroulante et le date picker
 // ═══════════════════════════════════════════════════════════════

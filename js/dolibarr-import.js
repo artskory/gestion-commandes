@@ -1,54 +1,39 @@
 /**
  * Script d'import depuis Dolibarr
- * Version 1.41
+ * Version 1.61 — chargé uniquement sur nouvelle-commande.php
  *
- * Deux cas gérés :
- *  1. L'onglet gestion-commandes était ouvert sur une AUTRE page (index, édition…)
- *     → le bookmarklet navigue vers nouvelle-commande.php
- *     → au chargement, checkPendingData() lit le localStorage et remplit le formulaire
+ * Le heartbeat et le BroadcastChannel listener sont dans app.js
+ * (chargé sur toutes les pages).
  *
- *  2. L'onglet était DÉJÀ sur nouvelle-commande.php
- *     → window.open navigue vers la même URL (rechargement)
- *     → idem : checkPendingData() au chargement
- *
- * Dans les deux cas, window.name = "gestion_commandes" (défini dans chaque vue)
- * permet au bookmarklet de retrouver l'onglet existant via window.open(url, 'gestion_commandes').
+ * Ce fichier gère uniquement :
+ *  - La lecture du localStorage au chargement (si window.open a été utilisé)
+ *  - Le remplissage du formulaire (appelé aussi par app.js via window.DOLIBARR_IMPORT)
  */
 
 const DOLIBARR_IMPORT = {
 
     storageKey: 'dolibarr_import_data',
 
-    // ─────────────────────────────────────────
-    // Initialisation
-    // ─────────────────────────────────────────
     init: function () {
-        // Lire les données en attente au chargement de la page
         this.checkPendingData();
     },
 
-    // ─────────────────────────────────────────
-    // Lecture des données au chargement
-    // ─────────────────────────────────────────
+    // Lecture au chargement de la page (cas : nouvel onglet ouvert par window.open)
     checkPendingData: function () {
         const raw = localStorage.getItem(this.storageKey);
         if (!raw) return;
-
         try {
             const data = JSON.parse(raw);
             localStorage.removeItem(this.storageKey);
             this.fillForm(data);
             this.showSuccess('✅ Données importées depuis Dolibarr avec succès !');
         } catch (e) {
-            console.error('Erreur parsing données:', e);
             this.showError("Erreur lors de l'import des données");
             localStorage.removeItem(this.storageKey);
         }
     },
 
-    // ─────────────────────────────────────────
-    // Remplissage du formulaire
-    // ─────────────────────────────────────────
+    // Remplissage du formulaire (appelé aussi par app.js via window.DOLIBARR_IMPORT)
     fillForm: function (data) {
         const fieldMapping = {
             'societe':             data.societe || data.client,
@@ -66,7 +51,6 @@ const DOLIBARR_IMPORT = {
             if (!value) return;
             const field = document.getElementById(fieldId);
             if (!field) return;
-
             field.value = value;
             field.dispatchEvent(new Event('change', { bubbles: true }));
             field.classList.add('border-success');
@@ -74,13 +58,9 @@ const DOLIBARR_IMPORT = {
         });
 
         if (data.delai_fabrication) this.fillDelai(data.delai_fabrication);
-
         window.scrollTo({ top: 0, behavior: 'smooth' });
     },
 
-    // ─────────────────────────────────────────
-    // Remplissage du délai de fabrication
-    // ─────────────────────────────────────────
     fillDelai: function (delai) {
         const matchJours = delai.match(/(\d+)\s*jours?/i);
         if (matchJours) {
@@ -95,7 +75,6 @@ const DOLIBARR_IMPORT = {
             }
             return;
         }
-
         if (/\d{2}\/\d{2}\/\d{4}/.test(delai)) {
             const parts = delai.split('/');
             const delaiDate = document.getElementById('delais_date');
@@ -107,11 +86,8 @@ const DOLIBARR_IMPORT = {
         }
     },
 
-    // ─────────────────────────────────────────
-    // Alertes
-    // ─────────────────────────────────────────
-    showSuccess: function (message) { this._showAlert(message, 'success', 5000); },
-    showError:   function (message) { this._showAlert(message, 'danger',  7000); },
+    showSuccess: function (m) { this._showAlert(m, 'success', 5000); },
+    showError:   function (m) { this._showAlert(m, 'danger',  7000); },
 
     _showAlert: function (message, type, delay) {
         const icon = type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill';
@@ -121,10 +97,7 @@ const DOLIBARR_IMPORT = {
         div.innerHTML = `<strong><i class="bi ${icon}"></i> ${message}</strong>
                          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
         document.body.appendChild(div);
-        setTimeout(() => {
-            div.classList.remove('show');
-            setTimeout(() => div.remove(), 150);
-        }, delay);
+        setTimeout(() => { div.classList.remove('show'); setTimeout(() => div.remove(), 150); }, delay);
     }
 };
 

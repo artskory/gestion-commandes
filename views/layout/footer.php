@@ -1,6 +1,6 @@
 
     <footer class="text-center text-light py-3 mt-5">
-        <small>Version 2.1.29</small>
+        <small>Version 2.1.30</small>
     </footer>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
