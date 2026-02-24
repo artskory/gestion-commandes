@@ -145,25 +145,12 @@
     </div>
 
     <footer class="text-center text-light py-3 mt-5">
-        <small>Version 2.1.22</small>
+        <small>Version 2.1.23</small>
     </footer>
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/app.js"></script>
     <script src="../js/alert.js"></script>
-    <script>
-        function clearDatePicker() {
-            if (document.getElementById('delais_liste').value !== '') {
-                document.getElementById('delais_date').value = '';
-            }
-        }
-        
-        function clearDropdown() {
-            if (document.getElementById('delais_date').value !== '') {
-                document.getElementById('delais_liste').value = '';
-            }
-        }
-    </script>
-    <script>window.name = "gestion_commandes";</script>
 </body>
 </html>

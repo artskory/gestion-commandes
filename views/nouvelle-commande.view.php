@@ -149,79 +149,13 @@
     </div>
 
     <footer class="text-center text-light py-3 mt-5">
-        <small>Version 2.1.22</small>
+        <small>Version 2.1.23</small>
     </footer>
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
     <script src="js/alert.js"></script>
     <script src="js/dolibarr-import.js"></script>
-    <script>
-        // Remplir le formulaire depuis les paramètres URL (import Dolibarr)
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            
-            if (urlParams.get('import') === 'dolibarr') {
-                console.log('Import Dolibarr détecté depuis URL');
-                
-                // Mapping des paramètres URL vers les champs du formulaire
-                const mapping = {
-                    'societe': 'societe',
-                    'n_commande_client': 'n_commande_client',
-                    'n_devis': 'n_devis',
-                    'reference_article': 'reference_article',
-                    'quantite_par_modele': 'quantite_par_modele',
-                    'delai_fabrication': 'delai_fabrication'
-                };
-                
-                let hasData = false;
-                Object.keys(mapping).forEach(function(param) {
-                    const value = urlParams.get(param);
-                    if (value) {
-                        const field = document.getElementById(mapping[param]);
-                        if (field) {
-                            field.value = value;
-                            field.style.borderColor = '#d4edda';
-                            field.style.borderWidth = '2px';
-                            hasData = true;
-                            console.log('Champ rempli:', mapping[param], '=', value);
-                        }
-                    }
-                });
-                
-                if (hasData) {
-                    // Afficher un message de succès
-                    const alert = document.createElement('div');
-                    alert.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
-                    alert.style.zIndex = '9999';
-                    alert.innerHTML = '<strong><i class="bi bi-check-circle-fill"></i> Données importées depuis Dolibarr !</strong><button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
-                    document.body.appendChild(alert);
-                    setTimeout(function() {
-                        alert.classList.remove('show');
-                        setTimeout(function() { alert.remove(); }, 150);
-                    }, 5000);
-                    
-                    // Nettoyer l'URL (enlever les paramètres)
-                    setTimeout(function() {
-                        const cleanUrl = window.location.origin + window.location.pathname;
-                        window.history.replaceState({}, document.title, cleanUrl);
-                    }, 1000);
-                }
-            }
-        });
-        
-        function clearDatePicker() {
-            if (document.getElementById('delais_liste').value !== '') {
-                document.getElementById('delais_date').value = '';
-            }
-        }
-        
-        function clearDropdown() {
-            if (document.getElementById('delais_date').value !== '') {
-                document.getElementById('delais_liste').value = '';
-            }
-        }
-    </script>
-    <script>window.name = "gestion_commandes";</script>
 </body>
 </html>

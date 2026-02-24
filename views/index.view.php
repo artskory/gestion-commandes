@@ -146,21 +146,17 @@
     </div>
 
     <footer class="text-center text-light py-3 mt-5">
-        <small>Version 2.1.22</small>
+        <small>Version 2.1.23</small>
     </footer>
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
     <script src="js/alert.js"></script>
     <script>
-
         const checkAll    = document.getElementById('check-all');
         const btnSuppr    = document.getElementById('btn-supprimer-selection');
         const nbSelection = document.getElementById('nb-selection');
-
-        function getChecked() {
-            return document.querySelectorAll('.check-commande:checked');
-        }
 
         function mettreAJourBouton() {
             const nb    = getChecked().length;
@@ -201,125 +197,7 @@
             cb.addEventListener('change', mettreAJourBouton);
         });
 
-        // ══════════════════════════════════════════════════════════════
-        // MODALS PERSONNALISÉES
-        // ══════════════════════════════════════════════════════════════
-
-        function afficherModal(titre, contenu, type, onConfirm) {
-            const modal      = document.getElementById('custom-modal');
-            const overlay    = document.getElementById('modal-overlay');
-            const header     = document.getElementById('modal-header');
-            const titleElem  = document.getElementById('modal-title');
-            const body       = document.getElementById('modal-body');
-            const confirmBtn = document.getElementById('modal-confirm-btn');
-
-            // Configuration du header selon le type
-            header.className = 'modal-header-custom';
-            confirmBtn.className = 'modal-btn modal-btn-confirm';
-            
-            if (type === 'danger') {
-                header.classList.add('danger');
-                header.querySelector('i').className = 'bi bi-exclamation-triangle-fill';
-            } else if (type === 'warning') {
-                header.classList.add('warning');
-                confirmBtn.classList.add('warning');
-                header.querySelector('i').className = 'bi bi-arrow-clockwise';
-            }
-
-            titleElem.textContent = titre;
-            body.innerHTML = contenu;
-
-            // Retirer l'ancien event listener
-            const newBtn = confirmBtn.cloneNode(true);
-            confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
-            document.getElementById('modal-confirm-btn').addEventListener('click', function() {
-                fermerModal();
-                onConfirm();
-            });
-
-            // Afficher
-            overlay.classList.add('show');
-            modal.classList.add('show');
-        }
-
-        function fermerModal() {
-            document.getElementById('custom-modal').classList.remove('show');
-            document.getElementById('modal-overlay').classList.remove('show');
-        }
-
-        // Fermer en cliquant sur l'overlay
-        document.getElementById('modal-overlay').addEventListener('click', fermerModal);
-
-        // Fermer avec Escape
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                fermerModal();
-            }
-        });
-
-        // ══════════════════════════════════════════════════════════════
-        // CONFIRMATION RECHARGEMENT
-        // ══════════════════════════════════════════════════════════════
-
-        function confirmerRechargement(event, id) {
-            event.preventDefault();
-            
-            const titre = 'Créer une nouvelle version ?';
-            const contenu = `
-                <p>Vous allez créer une nouvelle version de cette commande.</p>
-                <p style="margin-top: 12px; color: #666;">
-                    <i class="bi bi-info-circle" style="color: #ffc107;"></i>
-                    Un nouveau fichier CSV sera généré.
-                </p>
-            `;
-
-            afficherModal(titre, contenu, 'warning', function() {
-                window.location.href = 'recharger/' + id;
-            });
-        }
-
-        // ══════════════════════════════════════════════════════════════
-        // CONFIRMATION SUPPRESSION
-        // ══════════════════════════════════════════════════════════════
-
-        function confirmerSuppressionSelection() {
-            const cases = getChecked();
-            if (cases.length === 0) return;
-
-            const noms = Array.from(cases).map(cb => cb.dataset.nom);
-            
-            const titre = 'Supprimer ' + cases.length + ' commande(s) ?';
-            const listeHtml = noms.map(nom => 
-                `<div class="modal-list-item"><i class="bi bi-file-earmark-text"></i>${nom}</div>`
-            ).join('');
-            
-            const contenu = `
-                <p><strong>Vous êtes sur le point de supprimer ${cases.length} commande(s) :</strong></p>
-                <div class="modal-list">${listeHtml}</div>
-                <p style="margin-top: 16px; color: #dc3545; font-weight: 500;">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    Cette action est irréversible !
-                </p>
-            `;
-
-            afficherModal(titre, contenu, 'danger', function() {
-                const ids = Array.from(cases).map(cb => cb.value).join(',');
-                window.location.href = 'supprimer/' + ids;
-            });
-        }
-
-        // ══════════════════════════════════════════════════════════════
-        // TÉLÉCHARGEMENT AUTO
-        // ══════════════════════════════════════════════════════════════
-
-
-        // Synchronisation de l'animation hamburger avec le dropdown Bootstrap
-        const hamburgerBtn = document.getElementById('hamburger-btn');
-        const hamburgerSvg = document.getElementById('hamburger-svg');
-        if (hamburgerBtn && hamburgerSvg) {
-            hamburgerBtn.addEventListener('shown.bs.dropdown',  () => hamburgerSvg.classList.add('active'));
-            hamburgerBtn.addEventListener('hidden.bs.dropdown', () => hamburgerSvg.classList.remove('active'));
-        }
+        // Téléchargement automatique + nettoyage URL
         window.addEventListener('DOMContentLoaded', function () {
             const urlParams    = new URLSearchParams(window.location.search);
             const downloadFile = urlParams.get('download');
@@ -340,6 +218,5 @@
             }
         });
     </script>
-    <script>window.name = "gestion_commandes";</script>
 </body>
 </html>
