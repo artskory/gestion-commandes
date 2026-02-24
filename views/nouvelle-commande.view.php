@@ -48,7 +48,7 @@ include 'views/layout/header.php';
                                     </li>
                                 </ul>
                             </div>
-                            
+
                         </div>
 
                         <div class="card-body">
@@ -150,9 +150,6 @@ include 'views/layout/header.php';
 
                         </div>
                     </form>
-                    <a href="dolibarr-bookmarklet.html" class="btn btn-primary btn-vertical" target="_blank">
-                        <i class="bi bi-bookmark-star"></i> Installer le Bookmarklet
-                    </a>
                 </div>
             </div>
         </div>

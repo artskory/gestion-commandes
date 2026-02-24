@@ -89,6 +89,9 @@ JS;
 include 'views/layout/header.php';
 ?>
 
+    <a href="dolibarr-bookmarklet.html" class="btn btn-primary btn-vertical" target="_blank">
+        <i class="bi bi-bookmark-star"></i> Installer le Bookmarklet
+    </a>
     <!-- Modal de confirmation personnalisée -->
     <div class="custom-modal-overlay" id="modal-overlay"></div>
     <div class="custom-modal" id="custom-modal">
