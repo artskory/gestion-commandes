@@ -11,7 +11,61 @@ if (!empty($this->errors)) {
 }
 
 // Script spécifique : import Dolibarr
-$extraScripts = '<script src="js/dolibarr-import.js"></script>';
+$extraScripts = <<<'HTML'
+<script>
+(function () {
+    var p = new URLSearchParams(window.location.search);
+    if (p.get('import') !== 'dolibarr') return;
+
+    var map = {
+        'societe':             p.get('societe'),
+        'n_commande_client':   p.get('numero_commande'),
+        'n_devis':             p.get('numero_devis'),
+        'date_commande':       p.get('date_commande'),
+        'reference_article':   p.get('reference_article'),
+        'quantite_par_modele': p.get('quantite'),
+        'destinataire':        p.get('destinataire'),
+        'dossier_suivi_par':   p.get('suivi_par')
+    };
+
+    Object.keys(map).forEach(function (id) {
+        var val = map[id];
+        if (!val) return;
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.value = val;
+        el.style.borderColor = '#28a745';
+        el.style.borderWidth = '2px';
+        setTimeout(function () {
+            el.style.borderColor = '';
+            el.style.borderWidth = '';
+        }, 2000);
+    });
+
+    // Délai de fabrication
+    var delai = p.get('delai_fabrication');
+    if (delai) {
+        var m = delai.match(/(\d+)\s*jours?/i);
+        if (m) {
+            var sel = document.getElementById('delais_liste');
+            if (sel) {
+                var opt = 'J+' + m[1];
+                for (var i = 0; i < sel.options.length; i++) {
+                    if (sel.options[i].value === opt) { sel.value = opt; break; }
+                }
+            }
+        } else if (/\d{2}\/\d{2}\/\d{4}/.test(delai)) {
+            var parts = delai.split('/');
+            var dateEl = document.getElementById('delais_date');
+            if (dateEl) dateEl.value = parts[2] + '-' + parts[1] + '-' + parts[0];
+        }
+    }
+
+    // Nettoyer l'URL
+    window.history.replaceState({}, document.title, window.location.pathname);
+})();
+</script>
+HTML;
 
 include 'views/layout/header.php';
 ?>
