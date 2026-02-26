@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 /**
  * Installation automatique - Gestion des Commandes v1.31
  * 
@@ -8,6 +12,32 @@
 
 // Démarrer la session pour stocker les messages
 session_start();
+
+// Écriture sécurisée avec gestion des permissions
+function safe_write($file, $data) {
+    // Tenter de rendre le fichier accessible en écriture si besoin
+    if (file_exists($file) && !is_writable($file)) {
+        @chmod($file, 0664);
+    }
+    $result = @file_put_contents($file, $data);
+    if ($result === false) {
+        $os = PHP_OS_FAMILY;
+        if ($os === 'Darwin') {
+            $hint = "Sur Mac/XAMPP, exécutez dans le Terminal :<br>" .
+                    "<code>sudo chown -R daemon:staff /Applications/XAMPP/xamppfiles/htdocs/</code><br>" .
+                    "ou : <code>sudo chmod -R 777 /Applications/XAMPP/xamppfiles/htdocs/</code>";
+        } elseif ($os === 'Windows') {
+            $hint = "Sur Windows/XAMPP, faites clic droit sur le dossier <code>htdocs</code> " .
+                    "&rarr; Propriétés &rarr; Sécurité &rarr; donner le Contrôle total à l'utilisateur courant.";
+        } else {
+            $dir = dirname(realpath($file));
+            $hint = "Sur Linux : <code>sudo chmod -R 755 $dir</code><br>" .
+                    "ou : <code>sudo chown -R www-data:www-data $dir</code>";
+        }
+        throw new Exception("Impossible d'écrire dans <code>$file</code>.<br>" . $hint);
+    }
+    return $result;
+}
 
 // Configuration
 $installer_version = '1.31';
@@ -36,21 +66,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
     $dolibarr_url = rtrim(trim($_POST['dolibarr_url']), '/'); // ex: https://crm.mexichrome.fr
     
     try {
-        // 1. Connexion au serveur MySQL (sans base de données si on doit la créer)
+        // 1. Connexion au serveur MySQL (sans base de données)
+        $pdo = new PDO(
+            "mysql:host=$db_host;charset=utf8mb4",
+            $db_user,
+            $db_pass,
+            array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)
+        );
+
+        // 2. Créer la base de données si demandé
         if ($create_db) {
-            $pdo = new PDO(
-                "mysql:host=$db_host;charset=utf8mb4",
-                $db_user,
-                $db_pass,
-                array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)
-            );
-            
-            // Créer la base de données
             $pdo->exec("CREATE DATABASE IF NOT EXISTS `$db_name` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
             $success .= "✅ Base de données '$db_name' créée avec succès.<br>";
         }
-        
-        // 2. Connexion à la base de données
+
+        // 3. Se connecter à la base de données
         $pdo = new PDO(
             "mysql:host=$db_host;dbname=$db_name;charset=utf8mb4",
             $db_user,
@@ -130,12 +160,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
                 $content
             );
             
-            file_put_contents($database_file, $content);
+            safe_write($database_file, $content);
             $success .= "✅ Fichier Database.php mis à jour avec succès.<br>";
         }
         
         // 6. Créer le fichier de verrouillage
-        file_put_contents($installation_lock, date('Y-m-d H:i:s'));
+        safe_write($installation_lock, date('Y-m-d H:i:s'));
         $success .= "✅ Installation verrouillée.<br>";
         
         // 7. Créer un fichier de sécurité pour bloquer install.php
@@ -144,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
         $security_content .= "    Order allow,deny\n";
         $security_content .= "    Deny from all\n";
         $security_content .= "</Files>\n";
-        file_put_contents('.htaccess_security', $security_content);
+        safe_write('.htaccess_security', $security_content);
         $success .= "✅ Fichier de sécurité créé.<br>";
         
         // 8. Mettre à jour .htaccess avec le bon RewriteBase
@@ -157,7 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
                 'RewriteBase /' . $app_folder . '/',
                 $htaccess
             );
-            file_put_contents($htaccess_file, $htaccess);
+            safe_write($htaccess_file, $htaccess);
             $success .= "✅ .htaccess mis à jour (RewriteBase /$app_folder/).<br>";
         }
 
@@ -171,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
                 'http://localhost/' . $app_folder . '/nouvelle-commande.php',
                 $bk
             );
-            file_put_contents($bk_file, $bk);
+            safe_write($bk_file, $bk);
             $success .= "✅ Bookmarklet mis à jour (/$app_folder/).<br>";
         }
 
@@ -193,7 +223,7 @@ define('APP_FOLDER', '$app_folder');
             } else {
                 $cfg = preg_replace("/define\('DOLIBARR_URL',\s*'[^']*'\);/", "define('DOLIBARR_URL', '$dolibarr_url');", $cfg);
             }
-            file_put_contents($config_file, $cfg);
+            safe_write($config_file, $cfg);
             $success .= "✅ config.php mis à jour.<br>";
         }
 
@@ -208,9 +238,10 @@ define('APP_FOLDER', '$app_folder');
         }
         
     } catch (PDOException $e) {
-        $error = "❌ Erreur de base de données : " . $e->getMessage();
+        $error = "❌ Erreur de base de données : " . $e->getMessage() .
+                 "<br><small>Vérifiez l'hôte, le nom d'utilisateur et le mot de passe MySQL.</small>";
     } catch (Exception $e) {
-        $error = "❌ Erreur : " . $e->getMessage();
+        $error = "❌ " . $e->getMessage();
     }
 }
 ?>
