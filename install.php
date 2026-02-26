@@ -27,11 +27,13 @@ $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
     // Récupération des données du formulaire
-    $db_host = trim($_POST['db_host']);
-    $db_name = trim($_POST['db_name']);
-    $db_user = trim($_POST['db_user']);
-    $db_pass = $_POST['db_pass'];
-    $create_db = isset($_POST['create_db']) ? true : false;
+    $db_host    = trim($_POST['db_host']);
+    $db_name    = trim($_POST['db_name']);
+    $db_user    = trim($_POST['db_user']);
+    $db_pass    = $_POST['db_pass'];
+    $create_db  = isset($_POST['create_db']) ? true : false;
+    $app_folder = trim($_POST['app_folder'], '/');   // ex: gestion-commandes
+    $dolibarr_url = rtrim(trim($_POST['dolibarr_url']), '/'); // ex: https://crm.mexichrome.fr
     
     try {
         // 1. Connexion au serveur MySQL (sans base de données si on doit la créer)
@@ -145,7 +147,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
         file_put_contents('.htaccess_security', $security_content);
         $success .= "✅ Fichier de sécurité créé.<br>";
         
-        // 8. Test de connexion final
+        // 8. Mettre à jour .htaccess avec le bon RewriteBase
+        $htaccess_file = '.htaccess';
+        if (file_exists($htaccess_file)) {
+            $htaccess = file_get_contents($htaccess_file);
+            $htaccess = preg_replace(
+                '/RewriteBase\s+\/[^
+]*/i',
+                'RewriteBase /' . $app_folder . '/',
+                $htaccess
+            );
+            file_put_contents($htaccess_file, $htaccess);
+            $success .= "✅ .htaccess mis à jour (RewriteBase /$app_folder/).<br>";
+        }
+
+        // 9. Mettre à jour l'URL dans dolibarr-bookmarklet.html
+        $bk_file = 'dolibarr-bookmarklet.html';
+        if (file_exists($bk_file)) {
+            $bk = file_get_contents($bk_file);
+            // Remplacer l'URL de l'application dans le bookmarklet
+            $bk = preg_replace(
+                '/http[s]?:\/\/[^\/]+\/[^\/]+\/nouvelle-commande\.php/',
+                'http://localhost/' . $app_folder . '/nouvelle-commande.php',
+                $bk
+            );
+            file_put_contents($bk_file, $bk);
+            $success .= "✅ Bookmarklet mis à jour (/$app_folder/).<br>";
+        }
+
+        // 10. Sauvegarder la config dans config.php
+        $config_file = 'config.php';
+        if (file_exists($config_file)) {
+            $cfg = file_get_contents($config_file);
+            // Ajouter/mettre à jour APP_FOLDER et DOLIBARR_URL
+            if (strpos($cfg, 'APP_FOLDER') === false) {
+                $cfg .= "
+define('APP_FOLDER', '$app_folder');
+";
+            } else {
+                $cfg = preg_replace("/define\('APP_FOLDER',\s*'[^']*'\);/", "define('APP_FOLDER', '$app_folder');", $cfg);
+            }
+            if (strpos($cfg, 'DOLIBARR_URL') === false) {
+                $cfg .= "define('DOLIBARR_URL', '$dolibarr_url');
+";
+            } else {
+                $cfg = preg_replace("/define\('DOLIBARR_URL',\s*'[^']*'\);/", "define('DOLIBARR_URL', '$dolibarr_url');", $cfg);
+            }
+            file_put_contents($config_file, $cfg);
+            $success .= "✅ config.php mis à jour.<br>";
+        }
+
+        // 11. Test de connexion final
         require_once 'classes/Database.php';
         $db = new Database();
         $conn = $db->getConnection();
@@ -419,6 +471,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
                         <label class="form-check-label" for="create_db">
                             Créer la base de données si elle n'existe pas
                         </label>
+                    </div>
+
+                    <hr class="my-4">
+                    <h5 class="mb-3"><i class="bi bi-folder"></i> Configuration de l'application</h5>
+
+                    <div class="mb-3">
+                        <label for="app_folder" class="form-label">Nom du dossier de l'application</label>
+                        <div class="input-group">
+                            <span class="input-group-text">localhost/</span>
+                            <input type="text" class="form-control" id="app_folder" name="app_folder"
+                                   value="gestion-commandes" required
+                                   pattern="[a-zA-Z0-9_-]+"
+                                   title="Lettres, chiffres, tirets et underscores uniquement">
+                        </div>
+                        <small class="text-muted">Le nom du dossier sur votre serveur (ex: <code>gestion-commandes</code>, <code>commandes</code>)</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="dolibarr_url" class="form-label">URL de Dolibarr</label>
+                        <input type="url" class="form-control" id="dolibarr_url" name="dolibarr_url"
+                               value="https://" placeholder="https://crm.mondomaine.fr">
+                        <small class="text-muted">URL de votre Dolibarr — utilisée pour la configuration du bookmarklet</small>
                     </div>
 
                     <div class="warning-box">
