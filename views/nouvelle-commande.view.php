@@ -67,14 +67,14 @@ $extraScripts = <<<'HTML'
 </script>
 HTML;
 
-include 'views/layout/header.php';
+include __DIR__ . '/layout/header.php';
 ?>
 
     <div class="container mt-5 mb-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card" style="position: relative; overflow: visible;">
-                    <form method="POST" action="">
+                    <form method="POST" action="<?php echo $appBase; ?>/nouvelle">
                         <div class="card-header d-flex align-items-center justify-content-between">
                             <h2 class="font-bold">Nouvelle Commande</h2>
 
@@ -209,4 +209,4 @@ include 'views/layout/header.php';
         </div>
     </div>
 
-<?php include 'views/layout/footer.php'; ?>
+<?php include __DIR__ . '/layout/footer.php'; ?>

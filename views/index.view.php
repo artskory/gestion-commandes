@@ -86,7 +86,7 @@ $extraScripts = <<<'JS'
 </script>
 JS;
 
-include 'views/layout/header.php';
+include __DIR__ . '/layout/header.php';
 ?>
 
 <a href="tools/dolibarr-bookmarklet.html" class="btn btn-primary btn-vertical" target="_blank">
@@ -208,4 +208,4 @@ include 'views/layout/header.php';
     </div>
 </div>
 
-<?php include 'views/layout/footer.php'; ?>
+<?php include __DIR__ . '/layout/footer.php'; ?>

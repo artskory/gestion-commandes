@@ -9,10 +9,6 @@ RewriteBase /gestion-commandes/
 
 # ===== RÈGLES DE RÉÉCRITURE =====
 
-# Ne pas réécrire les fichiers et dossiers qui existent réellement
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-
 # Page d'accueil : / → index.php
 RewriteRule ^$ index.php [L]
 

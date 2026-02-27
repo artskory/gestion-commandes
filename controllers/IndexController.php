@@ -11,15 +11,15 @@ class IndexController {
     public $count = 0;
     
     public function __construct() {
-        require_once 'classes/Database.php';
-        require_once 'classes/Commande.php';
-        require_once 'classes/CSVExporter.php';
+        require_once __DIR__ . '/../classes/Database.php';
+        require_once __DIR__ . '/../classes/Commande.php';
+        require_once __DIR__ . '/../classes/CSVExporter.php';
         
         $database = new Database();
         $db = $database->getConnection();
         
         $this->commande = new Commande($db);
-        $this->csvExporter = new CSVExporter();
+        $this->csvExporter = new CSVExporter(__DIR__ . '/../downloads/');
     }
     
     /**
@@ -67,7 +67,7 @@ class IndexController {
         $this->commandes = $stmt->fetchAll();
         
         // Afficher la vue
-        include 'views/index.view.php';
+        include __DIR__ . '/../views/index.view.php';
     }
     
     /**

@@ -13,14 +13,14 @@ if (!empty($this->errors)) {
 // Pas de script supplémentaire pour cette vue
 $extraScripts = '';
 
-include 'views/layout/header.php';
+include __DIR__ . '/layout/header.php';
 ?>
 
     <div class="container mt-5 mb-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <form method="POST" action="">
+                    <form method="POST" action="<?php echo $appBase; ?>/editer/<?php echo htmlspecialchars($this->data['id']); ?>" >
                         <div class="card-header d-flex align-items-center justify-content-between">
                             <h2 class="font-bold">Éditer Commande</h2>
                             <!-- Boutons visibles au dessus de 1024px -->
@@ -162,4 +162,4 @@ include 'views/layout/header.php';
         </div>
     </div>
 
-<?php include 'views/layout/footer.php'; ?>
+<?php include __DIR__ . '/layout/footer.php'; ?>

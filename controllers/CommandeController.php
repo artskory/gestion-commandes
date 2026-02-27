@@ -9,25 +9,27 @@ class CommandeController {
     public $data = null;
     
     public function __construct() {
-        require_once 'classes/Database.php';
-        require_once 'classes/Commande.php';
-        require_once 'classes/CSVExporter.php';
+        require_once __DIR__ . '/../classes/Database.php';
+        require_once __DIR__ . '/../classes/Commande.php';
+        require_once __DIR__ . '/../classes/CSVExporter.php';
         
         $database = new Database();
         $db = $database->getConnection();
         
         $this->commande = new Commande($db);
-        $this->csvExporter = new CSVExporter();
+        $this->csvExporter = new CSVExporter(__DIR__ . '/../downloads/');
     }
     
     /**
      * Obtenir l'URL de base de l'application
      */
     private function getBaseUrl() {
-        // Obtenir le chemin du script sans le nom du fichier
         $scriptPath = dirname($_SERVER['SCRIPT_NAME']);
-        // Normaliser le chemin (enlever les / multiples)
-        return rtrim($scriptPath, '/');
+        // Si appelé depuis public/, remonter d'un niveau
+        if (basename($scriptPath) === 'public') {
+            $scriptPath = dirname($scriptPath);
+        }
+        return '/' . trim($scriptPath, '/');
     }
     
     /**
@@ -40,7 +42,8 @@ class CommandeController {
         }
         
         // Afficher la vue
-        include 'views/nouvelle-commande.view.php';
+        $appBase = $this->getBaseUrl();
+        include __DIR__ . '/../views/nouvelle-commande.view.php';
     }
     
     /**
@@ -81,7 +84,8 @@ class CommandeController {
         }
         
         // Afficher la vue
-        include 'views/editer-commande.view.php';
+        $appBase = $this->getBaseUrl();
+        include __DIR__ . '/../views/editer-commande.view.php';
     }
     
     /**
