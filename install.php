@@ -41,7 +41,7 @@ function safe_write($file, $data) {
 
 // Configuration
 $installer_version = '1.31';
-$db_sql_file = 'database.sql';
+$db_sql_file = 'database/database.sql';
 
 // Vérifier si l'installation est déjà effectuée
 $installation_lock = '.installation_complete';
@@ -182,7 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
         }
 
         // 8. Mettre à jour l'URL dans dolibarr-bookmarklet.html
-        $bk_file = 'dolibarr-bookmarklet.html';
+        $bk_file = 'tools/dolibarr-bookmarklet.html';
         if (file_exists($bk_file)) {
             $bk = file_get_contents($bk_file);
             // Remplacer l'URL de l'application dans le bookmarklet
