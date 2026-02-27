@@ -167,17 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
         // 6. Créer le fichier de verrouillage
         safe_write($installation_lock, date('Y-m-d H:i:s'));
         $success .= "✅ Installation verrouillée.<br>";
-        
-        // 7. Créer un fichier de sécurité pour bloquer install.php
-        $security_content = "# Fichier créé automatiquement - Ne pas supprimer\n";
-        $security_content .= "<Files \"install.php\">\n";
-        $security_content .= "    Order allow,deny\n";
-        $security_content .= "    Deny from all\n";
-        $security_content .= "</Files>\n";
-        safe_write('.htaccess_security', $security_content);
-        $success .= "✅ Fichier de sécurité créé.<br>";
-        
-        // 8. Mettre à jour .htaccess avec le bon RewriteBase
+        // 7. Mettre à jour .htaccess avec le bon RewriteBase
         $htaccess_file = '.htaccess';
         if (file_exists($htaccess_file)) {
             $htaccess = file_get_contents($htaccess_file);
@@ -191,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
             $success .= "✅ .htaccess mis à jour (RewriteBase /$app_folder/).<br>";
         }
 
-        // 9. Mettre à jour l'URL dans dolibarr-bookmarklet.html
+        // 8. Mettre à jour l'URL dans dolibarr-bookmarklet.html
         $bk_file = 'dolibarr-bookmarklet.html';
         if (file_exists($bk_file)) {
             $bk = file_get_contents($bk_file);
@@ -205,29 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
             $success .= "✅ Bookmarklet mis à jour (/$app_folder/).<br>";
         }
 
-        // 10. Sauvegarder la config dans config.php
-        $config_file = 'config.php';
-        if (file_exists($config_file)) {
-            $cfg = file_get_contents($config_file);
-            // Ajouter/mettre à jour APP_FOLDER et DOLIBARR_URL
-            if (strpos($cfg, 'APP_FOLDER') === false) {
-                $cfg .= "
-define('APP_FOLDER', '$app_folder');
-";
-            } else {
-                $cfg = preg_replace("/define\('APP_FOLDER',\s*'[^']*'\);/", "define('APP_FOLDER', '$app_folder');", $cfg);
-            }
-            if (strpos($cfg, 'DOLIBARR_URL') === false) {
-                $cfg .= "define('DOLIBARR_URL', '$dolibarr_url');
-";
-            } else {
-                $cfg = preg_replace("/define\('DOLIBARR_URL',\s*'[^']*'\);/", "define('DOLIBARR_URL', '$dolibarr_url');", $cfg);
-            }
-            safe_write($config_file, $cfg);
-            $success .= "✅ config.php mis à jour.<br>";
-        }
-
-        // 11. Test de connexion final
+        // 9. Test de connexion final
         require_once 'classes/Database.php';
         $db = new Database();
         $conn = $db->getConnection();
