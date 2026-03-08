@@ -35,9 +35,12 @@ RewriteRule ^corbeille$ index.php?corbeille=confirme [L]
 
 # Bloquer l'accès direct aux fichiers sensibles
 <FilesMatch "\.(env|sql|md|txt|log)$">
-    Order allow,deny
-    Deny from all
+    Require all denied
 </FilesMatch>
 
 # Bloquer l'accès aux dossiers sensibles
 RedirectMatch 403 ^/gestion-commandes/(classes|controllers|config\.php)
+
+# ===== PAGES D'ERREUR =====
+ErrorDocument 404 /gestion-commandes/404.php
+ErrorDocument 403 /gestion-commandes/404.php
