@@ -9,6 +9,10 @@ $basePath    = '/gestion-commandes/';
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>404 — Page Non Approuvée</title>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -42,7 +46,7 @@ $basePath    = '/gestion-commandes/';
     .sheet {
       background: var(--paper);
       width: 100%;
-      max-width: 860px;
+      max-width: 1280px;
       min-height: 640px;
       position: relative;
       padding: 60px 70px 50px;
@@ -228,6 +232,24 @@ left: -20px;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--ink);
+    }
+
+    /* === ERROR BODY 2-COL LAYOUT === */
+    .error-body-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+      margin-top: 12px;
+    }
+    .error-col-left { display: flex; flex-direction: column; }
+    .error-col-right { display: flex; flex-direction: column; }
+
+    @media (max-width: 720px) {
+      .error-body-cols {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
     }
 
     /* === MAIN CONTENT === */
@@ -583,46 +605,56 @@ left: -20px;
       <!-- Error number -->
       <div class="error-num" data-text="404">404</div>
 
-      <!-- Body text -->
+      <!-- Body text — two columns -->
       <div class="error-body">
         <div class="error-eyebrow">Code d'erreur de mise en page</div>
-        <h1 class="error-title">Cette page n'a pas<br>passé le contrôle qualité.</h1>
-        <p class="error-desc">
-          L'épreuve demandée est introuvable dans notre atelier. Elle a peut-être été retirée de la chaîne graphique, déplacée vers un autre support, ou n'a jamais été mise en fabrication.
-        </p>
+        <div class="error-body-cols">
 
-        <!-- Annotations in blue ink -->
-        <div class="annotation">URL incorrecte ou page supprimée</div>
-        <div class="annotation">Vérifier le bon de commande et l'imposition</div>
-        <div class="annotation">Contacter le conducteur de machine</div>
+          <!-- Colonne gauche : titre + description -->
+          <div class="error-col-left">
+            <h1 class="error-title">Cette page n'a pas<br>passé le contrôle qualité.</h1>
+            <p class="error-desc">
+              L'épreuve demandée est introuvable dans notre atelier. Elle a peut-être été retirée de la chaîne graphique, déplacée vers un autre support, ou n'a jamais été mise en fabrication.
+            </p>
+            <a href="<?php echo $basePath; ?>" class="btn btn-home mt-3">
+              <i class="bi bi-house-door me-2"></i>Retour à l'atelier
+            </a>
+          </div>
 
-        <!-- Checklist -->
-        <div class="checklist">
-          <div class="checklist-title">Contrôle pré-impression — BAT</div>
-          <div class="check-item">
-            <span class="check-box checked">✓</span>
-            <span class="check-label">Résolution des images (300 dpi min.)</span>
+          <!-- Colonne droite : annotations + checklist -->
+          <div class="error-col-right">
+            <!-- Annotations in blue ink -->
+            <div class="annotation">URL incorrecte ou page supprimée</div>
+            <div class="annotation">Vérifier le bon de commande et l'imposition</div>
+            <div class="annotation">Contacter le conducteur de machine</div>
+
+            <!-- Checklist -->
+            <div class="checklist">
+              <div class="checklist-title">Contrôle pré-impression — BAT</div>
+              <div class="check-item">
+                <span class="check-box checked">✓</span>
+                <span class="check-label">Résolution des images (300 dpi min.)</span>
+              </div>
+              <div class="check-item">
+                <span class="check-box checked">✓</span>
+                <span class="check-label">Profil colorimétrique CMJN validé</span>
+              </div>
+              <div class="check-item">
+                <span class="check-box cross">✗</span>
+                <span class="check-label striked">Page trouvée sur le serveur</span>
+              </div>
+              <div class="check-item">
+                <span class="check-box cross">✗</span>
+                <span class="check-label striked">URL correctement renseignée</span>
+              </div>
+              <div class="check-item">
+                <span class="check-box cross">✗</span>
+                <span class="check-label striked">Contenu approuvé pour impression</span>
+              </div>
+            </div>
           </div>
-          <div class="check-item">
-            <span class="check-box checked">✓</span>
-            <span class="check-label">Profil colorimétrique CMJN validé</span>
-          </div>
-          <div class="check-item">
-            <span class="check-box cross">✗</span>
-            <span class="check-label striked">Page trouvée sur le serveur</span>
-          </div>
-          <div class="check-item">
-            <span class="check-box cross">✗</span>
-            <span class="check-label striked">URL correctement renseignée</span>
-          </div>
-          <div class="check-item">
-            <span class="check-box cross">✗</span>
-            <span class="check-label striked">Contenu approuvé pour impression</span>
-          </div>
+
         </div>
-        <a href="<?php echo $basePath; ?>" class="btn btn-home">
-            <i class="bi bi-house-door me-2"></i>Retour à l'atelier
-        </a>
       </div>
     </div>
 
@@ -673,5 +705,7 @@ left: -20px;
 
 </div>
 
+<!-- Bootstrap 5 JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
