@@ -177,8 +177,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
                 'RewriteBase /' . $app_folder . '/',
                 $htaccess
             );
+            // Mettre à jour les lignes ErrorDocument
+            $htaccess = preg_replace(
+                '/ErrorDocument\s+404\s+\/[^\r\n]*/i',
+                'ErrorDocument 404 /' . $app_folder . '/404.php',
+                $htaccess
+            );
+            $htaccess = preg_replace(
+                '/ErrorDocument\s+403\s+\/[^\r\n]*/i',
+                'ErrorDocument 403 /' . $app_folder . '/404.php',
+                $htaccess
+            );
+
+            // Mettre à jour RedirectMatch pour les dossiers sensibles
+            $htaccess = preg_replace(
+                '/RedirectMatch 403 \^\/[^\/\(]+\//i',
+                'RedirectMatch 403 ^/' . $app_folder . '/',
+                $htaccess
+            );
+
             safe_write($htaccess_file, $htaccess);
-            $success .= "✅ .htaccess mis à jour (RewriteBase /$app_folder/).<br>";
+            $success .= "✅ .htaccess mis à jour (RewriteBase, ErrorDocument, RedirectMatch → /$app_folder/).<br>";
         }
 
         // 8. Mettre à jour l'URL dans dolibarr-bookmarklet.html
@@ -221,6 +240,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
     <title>Installation - Gestion des Commandes v<?php echo $installer_version; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="icon" type="image/png" href="image/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/svg+xml" href="image/favicon.svg">
+    <link rel="shortcut icon" href="image/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="image/apple-touch-icon.png">
+    <link rel="manifest" href="image/site.webmanifest">
     <style>
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
