@@ -13,6 +13,9 @@ RewriteBase /gestion-commandes/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
+# Ping bookmarklet : /ping-bookmarklet → index.php?ping-bookmarklet=1
+RewriteRule ^ping-bookmarklet$ index.php?ping-bookmarklet=1 [L]
+
 # Page d'accueil : / → index.php
 RewriteRule ^$ index.php [L]
 
@@ -40,7 +43,7 @@ RewriteRule ^corbeille$ index.php?corbeille=confirme [L]
 
 # Bloquer l'accès aux dossiers sensibles
 RedirectMatch 403 ^/gestion-commandes/(classes|controllers|config\.php)
-
+-e 
 # ===== PAGES D'ERREUR =====
 ErrorDocument 404 /gestion-commandes/404.php
 ErrorDocument 403 /gestion-commandes/404.php
