@@ -200,7 +200,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
             $success .= "✅ .htaccess mis à jour (RewriteBase, ErrorDocument, RedirectMatch → /$app_folder/).<br>";
         }
 
-        // 8. Mettre à jour l'URL dans dolibarr-bookmarklet.html
+        // 8. Mettre à jour le $basePath dans 404.php
+        $error404_file = '404.php';
+        if (file_exists($error404_file)) {
+            $error404 = file_get_contents($error404_file);
+            $error404 = preg_replace(
+                "/\\\$basePath\\s*=\\s*'[^']*';/",
+                "\$basePath = '/$app_folder/';",
+                $error404
+            );
+            safe_write($error404_file, $error404);
+            $success .= "✅ 404.php mis à jour (\$basePath → /$app_folder/).<br>";
+        }
+
+        // 9. Mettre à jour l'URL dans dolibarr-bookmarklet.html
         $bk_file = 'tools/dolibarr-bookmarklet.html';
         if (file_exists($bk_file)) {
             $bk = file_get_contents($bk_file);
@@ -240,11 +253,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
     <title>Installation - Gestion des Commandes v<?php echo $installer_version; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="icon" type="image/png" href="image/favicon-96x96.png" sizes="96x96">
-    <link rel="icon" type="image/svg+xml" href="image/favicon.svg">
-    <link rel="shortcut icon" href="image/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="image/apple-touch-icon.png">
-    <link rel="manifest" href="image/site.webmanifest">
     <style>
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

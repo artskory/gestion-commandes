@@ -1,6 +1,6 @@
 <?php
 $pageTitle   = 'Page introuvable – 404';
-$basePath    = '/gestion-commandes/';
+$basePath = '/bat-app/';
 ?>
 
 <!DOCTYPE html>
@@ -14,6 +14,15 @@ $basePath    = '/gestion-commandes/';
   <!-- Bootstrap Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css">
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="image/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/png" href="image/web-app-manifest-192x192.png" sizes="192x192" />
+    <link rel="icon" type="image/png" href="image/web-app-manifest-512x512.png" sizes="512x512" />
+    <link rel="icon" type="image/svg+xml" href="image/favicon.svg" />
+    <link rel="shortcut icon" href="image/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="image/apple-touch-icon.png" />
+    <link rel="manifest" href="image/site.webmanifest" />
   <style>
     :root {
       --ink: #1a1008;
@@ -616,7 +625,7 @@ left: -20px;
             <p class="error-desc">
               L'épreuve demandée est introuvable dans notre atelier. Elle a peut-être été retirée de la chaîne graphique, déplacée vers un autre support, ou n'a jamais été mise en fabrication.
             </p>
-            <a href="<?php echo $basePath; ?>" class="btn btn-home mt-3">
+            <a href="<?php echo $basePath; ?>" class="btn btn-primary mt-3">
               <i class="bi bi-house-door me-2"></i>Retour à l'atelier
             </a>
           </div>
