@@ -40,11 +40,6 @@ function renderPage(string $title, string $content, string $bgClass = 'bg-primar
         <title><?php echo htmlspecialchars($title); ?> — Étiquettes</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-        <link rel="icon" type="image/png" href="image/favicon-96x96.png" sizes="96x96">
-        <link rel="icon" type="image/svg+xml" href="image/favicon.svg">
-        <link rel="shortcut icon" href="image/favicon.ico">
-        <link rel="apple-touch-icon" sizes="180x180" href="image/apple-touch-icon.png">
-        <link rel="manifest" href="image/site.webmanifest">
         <style>
             body {
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -149,8 +144,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' || (isset($_POST['run']) === false)) {
     // Vérifier git
     exec('git -C ' . escapeshellarg(APP_ROOT) . ' rev-parse --abbrev-ref HEAD 2>&1', $branchOut, $branchCode);
     exec('git -C ' . escapeshellarg(APP_ROOT) . ' log -1 --format="%h — %s (%cr)" 2>&1', $logOut, $logCode);
-    exec('git -C ' . escapeshellarg(APP_ROOT) . ' fetch 2>&1', $fetchOut, $fetchCode);
-    exec('git -C ' . escapeshellarg(APP_ROOT) . ' log HEAD..origin/' . trim($branchOut[0] ?? 'main') . ' --oneline 2>&1', $pendingOut, $pendingCode);
+    exec('git -C ' . escapeshellarg(APP_ROOT) . ' remote show origin 2>&1', $remoteInfoOut);
+    $remoteBranchName = 'main';
+    foreach ($remoteInfoOut as $line) {
+        if (preg_match('/HEAD branch:\s*(\S+)/', $line, $m)) {
+            $remoteBranchName = trim($m[1]);
+            break;
+        }
+    }
+    exec('git -C ' . escapeshellarg(APP_ROOT) . ' fetch origin 2>&1', $fetchOut, $fetchCode);
+    exec('git -C ' . escapeshellarg(APP_ROOT) . ' log HEAD..origin/' . $remoteBranchName . ' --oneline 2>&1', $pendingOut, $pendingCode);
 
     $branch       = htmlspecialchars(trim($branchOut[0] ?? 'inconnue'));
     $lastCommit   = htmlspecialchars(trim($logOut[0] ?? 'inconnu'));
@@ -251,13 +254,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['run'])) {
         }
     }
 
-    // --- ÉTAPE 2 : git pull ---
+    // --- ÉTAPE 2 : Détecter la branche principale distante ---
+    exec('git -C ' . escapeshellarg(APP_ROOT) . ' remote show origin 2>&1', $remoteOut);
+    $remoteBranch = 'main'; // fallback
+    foreach ($remoteOut as $line) {
+        if (preg_match('/HEAD branch:\s*(\S+)/', $line, $m)) {
+            $remoteBranch = trim($m[1]);
+            break;
+        }
+    }
+
+    // --- ÉTAPE 2 : git fetch + merge explicite ---
+    exec('git -C ' . escapeshellarg(APP_ROOT) . ' fetch origin 2>&1', $fetchOut, $fetchCode);
     exec(
-        'git -C ' . escapeshellarg(APP_ROOT) . ' pull 2>&1',
+        'git -C ' . escapeshellarg(APP_ROOT) . ' merge origin/' . escapeshellarg($remoteBranch) . ' 2>&1',
         $pullOut,
         $pullCode
     );
-    $pullOutput = implode("\n", $pullOut);
+    $pullOutput = 'Branche : ' . $remoteBranch . "\n" . implode("\n", $pullOut);
 
     if ($pullCode !== 0) {
         $steps  .= step('x-circle', 'Échec du git pull — restauration des fichiers', 'error', $pullOutput);
