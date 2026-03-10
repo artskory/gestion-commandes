@@ -43,7 +43,6 @@ RewriteRule ^corbeille$ index.php?corbeille=confirme [L]
 
 # Bloquer l'accès aux dossiers sensibles
 RedirectMatch 403 ^/gestion-commandes/(classes|controllers|config\.php)
--e 
 # ===== PAGES D'ERREUR =====
 ErrorDocument 404 /gestion-commandes/404.php
 ErrorDocument 403 /gestion-commandes/404.php
