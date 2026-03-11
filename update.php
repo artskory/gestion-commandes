@@ -14,7 +14,7 @@ session_start();
 // =====================================================
 define('GITHUB_REPO',    'artskory/gestion-commandes');
 define('GITHUB_API',     'https://api.github.com/repos/' . GITHUB_REPO);
-define('GITHUB_ZIP',     'https://github.com/' . GITHUB_REPO . '/archive/refs/heads/main.zip');
+define('GITHUB_ZIP',     'https://github.com/' . GITHUB_REPO . '/archive/refs/heads/update.zip');
 define('APP_CONFIG',     __DIR__ . '/.app_config');
 define('BACKUP_DIR',     __DIR__ . '/backups');
 define('MIGRATIONS_LOG', __DIR__ . '/.migrations_done');
@@ -59,13 +59,20 @@ function getAppVersion() {
     return $m[1] ?? 'inconnue';
 }
 
+function getBranch() {
+    // Extrait le nom de branche depuis GITHUB_ZIP
+    preg_match('/refs\/heads\/([^\.]+)\.zip/', GITHUB_ZIP, $m);
+    return $m[1] ?? 'main';
+}
+
 function getGithubVersion() {
+    $branch = getBranch();
     $ctx = stream_context_create(['http' => [
         'method'  => 'GET',
         'header'  => "User-Agent: gestion-commandes-updater\r\n",
         'timeout' => 10,
     ]]);
-    $json = @file_get_contents(GITHUB_API . '/contents/install.php', false, $ctx);
+    $json = @file_get_contents(GITHUB_API . '/contents/install.php?ref=' . $branch, false, $ctx);
     if (!$json) return null;
     $data = json_decode($json, true);
     if (empty($data['content'])) return null;
@@ -116,9 +123,8 @@ function createBackup() {
     $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__));
     foreach ($it as $file) {
         if ($file->isDir()) continue;
-        $realPath = $file->getRealPath();
-        $relPath  = str_replace(__DIR__ . DIRECTORY_SEPARATOR, '', $realPath);
-        $relPath  = str_replace('\\', '/', $relPath);
+        $realPath = str_replace('\\', '/', $file->getRealPath());
+        $relPath  = ltrim(str_replace(str_replace('\\', '/', __DIR__) . '/', '', $realPath), '/');
         // Exclure les backups eux-mêmes et les fichiers temporaires
         if (strpos($relPath, 'backups/') === 0) continue;
         if (strpos($relPath, '.tmp_update') !== false) continue;
@@ -160,12 +166,17 @@ function downloadUpdate() {
 function applyUpdate($sourceDir) {
     $applied = [];
     $skipped = [];
+    // Normaliser le chemin source en slashes pour comparaison cross-platform
+    $sourceDirNorm = rtrim(str_replace('\\', '/', $sourceDir), '/') . '/';
     $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($sourceDir));
     foreach ($it as $file) {
         if ($file->isDir()) continue;
-        $relPath = ltrim(str_replace($sourceDir, '', $file->getRealPath()), DIRECTORY_SEPARATOR);
-        $relPath = str_replace('\\', '/', $relPath);
-        $destPath = __DIR__ . '/' . $relPath;
+        // Normaliser le chemin du fichier en slashes
+        $realPath = str_replace('\\', '/', $file->getRealPath());
+        // Extraire le chemin relatif
+        $relPath = ltrim(str_replace($sourceDirNorm, '', $realPath), '/');
+        if (empty($relPath)) continue;
+        $destPath = str_replace('\\', '/', __DIR__) . '/' . $relPath;
         if (isWhitelisted($relPath)) {
             $skipped[] = $relPath;
             continue;
@@ -182,7 +193,7 @@ function applyUpdate($sourceDir) {
 function runMigrations($sourceDir) {
     $done    = getMigrationsDone();
     $results = [];
-    $migDir  = $sourceDir . '/' . MIGRATIONS_DIR;
+    $migDir  = rtrim(str_replace('\\', '/', $sourceDir), '/') . '/' . MIGRATIONS_DIR;
     if (!is_dir($migDir)) return $results;
 
     $files = glob($migDir . '/*.php');
