@@ -36,6 +36,11 @@ class CommandeController {
      * Créer une nouvelle commande
      */
     public function create() {
+        // Bookmarklet détecté : poser le cookie
+        if (isset($_GET['bookmarklet'])) {
+            setcookie('bookmarklet_installed', '1', time() + (365 * 24 * 3600), '/');
+        }
+
         // Traitement du formulaire
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $this->processCreate();
