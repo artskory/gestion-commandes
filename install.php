@@ -64,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
     $create_db  = isset($_POST['create_db']) ? true : false;
     $app_folder = trim($_POST['app_folder'], '/');   // ex: gestion-commandes
     $dolibarr_url = rtrim(trim($_POST['dolibarr_url']), '/'); // ex: https://crm.mexichrome.fr
+    $update_password = trim($_POST['update_password'] ?? '');
     
     try {
         // 1. Connexion au serveur MySQL (sans base de données)
@@ -167,6 +168,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
         // 6. Créer le fichier de verrouillage
         safe_write($installation_lock, date('Y-m-d H:i:s'));
         $success .= "✅ Installation verrouillée.<br>";
+
+        // Écriture du fichier de configuration .app_config
+        $app_config = [
+            'app_folder'      => $app_folder,
+            'update_password' => password_hash($update_password, PASSWORD_BCRYPT),
+            'installed_at'    => date('Y-m-d H:i:s'),
+        ];
+        safe_write('.app_config', json_encode($app_config, JSON_PRETTY_PRINT));
+        $success .= "✅ Fichier .app_config créé.<br>";
         // 7. Mettre à jour .htaccess avec le bon RewriteBase
         $htaccess_file = '.htaccess';
         if (file_exists($htaccess_file)) {
@@ -200,7 +210,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
             $success .= "✅ .htaccess mis à jour (RewriteBase, ErrorDocument, RedirectMatch → /$app_folder/).<br>";
         }
 
-        // 8. Mettre à jour l'URL dans dolibarr-bookmarklet.html
+        // 8. Mettre à jour le $basePath dans 404.php
+        $error404_file = '404.php';
+        if (file_exists($error404_file)) {
+            $error404 = file_get_contents($error404_file);
+            $error404 = preg_replace(
+                "/\\\$basePath\\s*=\\s*'[^']*';/",
+                "\$basePath = '/$app_folder/';",
+                $error404
+            );
+            safe_write($error404_file, $error404);
+            $success .= "✅ 404.php mis à jour (\$basePath → /$app_folder/).<br>";
+        }
+
+        // 9. Mettre à jour l'URL dans dolibarr-bookmarklet.html
         $bk_file = 'tools/dolibarr-bookmarklet.html';
         if (file_exists($bk_file)) {
             $bk = file_get_contents($bk_file);
@@ -240,11 +263,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
     <title>Installation - Gestion des Commandes v<?php echo $installer_version; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="icon" type="image/png" href="image/favicon-96x96.png" sizes="96x96">
-    <link rel="icon" type="image/svg+xml" href="image/favicon.svg">
-    <link rel="shortcut icon" href="image/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="image/apple-touch-icon.png">
-    <link rel="manifest" href="image/site.webmanifest">
     <style>
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -509,6 +527,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step == 2) {
                                    title="Lettres, chiffres, tirets et underscores uniquement">
                         </div>
                         <small class="text-muted">Le nom du dossier sur votre serveur (ex: <code>gestion-commandes</code>, <code>commandes</code>)</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="update_password" class="form-label">Mot de passe de mise à jour <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" id="update_password" name="update_password" required>
+                        <small class="text-muted">Protège l'accès à <code>update.php</code> — choisissez un mot de passe robuste</small>
                     </div>
 
                     <div class="mb-3">
