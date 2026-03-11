@@ -13,6 +13,9 @@ RewriteBase /gestion-commandes/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
+# Mise à jour : /update → update.php
+RewriteRule ^update$ update.php [L]
+
 # Ping bookmarklet : /ping-bookmarklet → index.php?ping-bookmarklet=1
 RewriteRule ^ping-bookmarklet$ index.php?ping-bookmarklet=1 [L]
 
@@ -37,7 +40,7 @@ RewriteRule ^corbeille$ index.php?corbeille=confirme [L]
 # ===== SÉCURITÉ =====
 
 # Bloquer l'accès direct aux fichiers sensibles
-<FilesMatch "\.(env|sql|md|txt|log)$">
+<FilesMatch "\.(env|sql|md|txt|log|app_config|migrations_done|installation_complete)$">
     Require all denied
 </FilesMatch>
 
