@@ -40,7 +40,7 @@ function safe_write($file, $data) {
 }
 
 // Configuration
-$installer_version = '1.31';
+$installer_version = '1.32';
 $db_sql_file = 'database/database.sql';
 
 // Vérifier si l'installation est déjà effectuée
