@@ -4,7 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 /**
- * Installation automatique - Gestion des Commandes v1.31
+ * Installation automatique - Gestion des Commandes v1.33
  * 
  * Ce fichier permet d'installer automatiquement la base de données
  * ATTENTION : Supprimez ce fichier après installation !
@@ -40,7 +40,7 @@ function safe_write($file, $data) {
 }
 
 // Configuration
-$installer_version = '1.32';
+$installer_version = '1.33';
 $db_sql_file = 'database/database.sql';
 
 // Vérifier si l'installation est déjà effectuée
