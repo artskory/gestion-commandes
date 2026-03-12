@@ -4,6 +4,9 @@
  * Version 1.28 - Architecture MVC
  */
 
+require_once __DIR__ . '/../classes/Security.php';
+Security::applyHeaders();
+
 require_once __DIR__ . '/../controllers/CommandeController.php';
 
 // Vérifier si un ID est fourni

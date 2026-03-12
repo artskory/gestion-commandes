@@ -13,6 +13,9 @@ if (isset($_GET['ping-bookmarklet'])) {
     exit;
 }
 
+require_once 'classes/Security.php';
+Security::applyHeaders();
+
 require_once 'controllers/IndexController.php';
 
 $controller = new IndexController();
