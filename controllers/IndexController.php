@@ -2,6 +2,8 @@
 /**
  * IndexController - Gestion de la page d'accueil et des actions sur les commandes
  */
+require_once __DIR__ . '/../classes/Security.php';
+
 class IndexController {
     private $commande;
     private $csvExporter;
@@ -92,8 +94,10 @@ class IndexController {
         }
         
         if ($succes) {
+            Security::logInfo('Suppression commande(s)', ['ids' => implode(',', $listeIds)]);
             header('Location: ' . $baseUrl . '/?success=suppression_individuelle');
         } else {
+            Security::logError('Échec suppression commande(s)', ['ids' => implode(',', $listeIds)]);
             header('Location: ' . $baseUrl . '/?error=suppression');
         }
         exit;
@@ -105,6 +109,7 @@ class IndexController {
     private function supprimerCommandesAnciennes() {
         $baseUrl = $this->getBaseUrl();
         $count = $this->commande->deleteOldCommandes();
+        Security::logInfo('Vidage corbeille', ['count' => $count]);
         header('Location: ' . $baseUrl . '/?success=suppression&count=' . $count);
         exit;
     }

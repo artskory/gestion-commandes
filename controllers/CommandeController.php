@@ -2,6 +2,8 @@
 /**
  * CommandeController - Gestion de la création et édition de commandes
  */
+require_once __DIR__ . '/../classes/Security.php';
+
 class CommandeController {
     private $commande;
     private $csvExporter;
@@ -137,9 +139,11 @@ class CommandeController {
                 
                 // Rediriger vers l'index avec le chemin du fichier pour téléchargement
                 $baseUrl = $this->getBaseUrl();
+                Security::logInfo('Nouvelle commande créée', ['n_commande' => $data['n_commande_client'], 'societe' => $data['societe']]);
                 header('Location: ' . $baseUrl . '/?success=creation&download=' . urlencode(basename($filepath)));
                 exit;
             } else {
+                Security::logError('Échec création commande', ['data' => $data['n_commande_client'] ?? '']);
                 $this->errors[] = "Erreur lors de la création de la commande";
             }
         }
@@ -204,10 +208,12 @@ class CommandeController {
                 if ($faire_rechargement) {
                     header('Location: ' . $baseUrl . '/?success=rechargement&download=' . urlencode(basename($filepath)));
                 } else {
+                    Security::logInfo('Commande modifiée', ['n_commande' => $data['n_commande_client']]);
                     header('Location: ' . $baseUrl . '/?success=modification&download=' . urlencode(basename($filepath)));
                 }
                 exit;
             } else {
+                Security::logError('Échec modification commande', ['id' => $_GET['id'] ?? '']);
                 $this->errors[] = "Erreur lors de la modification de la commande";
             }
         }

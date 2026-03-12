@@ -44,6 +44,9 @@ RewriteRule ^corbeille$ index.php?corbeille=confirme [L]
     Require all denied
 </FilesMatch>
 
+# Bloquer accès direct au dossier logs
+RedirectMatch 403 ^/[^/]+/logs/
+
 # Bloquer l'accès aux dossiers sensibles
 RedirectMatch 403 ^/gestion-commandes/(classes|controllers|config\.php)
 # ===== PAGES D'ERREUR =====

@@ -31,6 +31,7 @@ define('WHITELIST', [
     '.migrations_done',
     'downloads',
     'backups',
+    'classes/Security.php',
 ]);
 
 // =====================================================
