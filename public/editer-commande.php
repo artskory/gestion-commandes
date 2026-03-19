@@ -4,6 +4,7 @@
  * Version 1.28 - Architecture MVC
  */
 
+require_once __DIR__ . '/../version.php';
 require_once __DIR__ . '/../classes/Security.php';
 Security::applyHeaders();
 

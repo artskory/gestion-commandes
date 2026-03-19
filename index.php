@@ -13,6 +13,7 @@ if (isset($_GET['ping-bookmarklet'])) {
     exit;
 }
 
+require_once 'version.php';
 require_once 'classes/Security.php';
 Security::applyHeaders();
 
