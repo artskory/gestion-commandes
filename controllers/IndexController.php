@@ -4,6 +4,31 @@
  */
 require_once __DIR__ . '/../classes/Security.php';
 
+/**
+ * Ajoute N jours ouvrés (lun-ven) à une date donnée (format Y-m-d)
+ * Retourne la date résultante en format Y-m-d
+ */
+function addBusinessDays($dateStr, $days) {
+    $d     = new DateTime($dateStr);
+    $added = 0;
+    while ($added < $days) {
+        $d->modify('+1 day');
+        $dow = (int)$d->format('N'); // 1=lundi, 7=dimanche
+        if ($dow <= 5) $added++;    // compter uniquement lun-ven
+    }
+    return $d->format('Y-m-d');
+}
+
+/**
+ * Retourne true si l'alerte doit être affichée pour cette commande
+ */
+function alerteVisible($cmd) {
+    $reference = !empty($cmd['alerte_depuis']) ? $cmd['alerte_depuis']
+                                               : ($cmd['date_commande'] ?? date('Y-m-d'));
+    $seuil = addBusinessDays($reference, 2);
+    return date('Y-m-d') >= $seuil;
+}
+
 class IndexController {
     private $commande;
     private $csvExporter;
@@ -53,6 +78,18 @@ class IndexController {
             $this->rechargerCommande($_GET['id']);
         }
         
+        // Gestion du snooze alerte
+        if (isset($_GET['snooze-alerte']) && isset($_GET['id'])) {
+            $id = intval($_GET['id']);
+            if ($id > 0) {
+                $this->commande->snoozeAlerte($id);
+                Security::logInfo('Snooze alerte commande', ['id' => $id]);
+            }
+            header('Content-Type: application/json');
+            echo json_encode(['ok' => true]);
+            exit;
+        }
+
         // Récupérer les messages de succès/erreur
         if (isset($_GET['success'])) {
             $this->success = $_GET['success'];
@@ -134,6 +171,9 @@ class IndexController {
             // Mettre à jour le numéro de version ET la date en base de données
             $this->commande->updateNumeroCommande($id, $nouveau_numero, $aujourd_hui);
             
+            // Remettre à zéro l'alerte (le rechargement repart de zéro)
+            $this->commande->resetAlerte($id);
+
             // Mettre à jour $data pour le CSV
             $data['n_commande_client'] = $nouveau_numero;
             $data['date_commande']     = $aujourd_hui;

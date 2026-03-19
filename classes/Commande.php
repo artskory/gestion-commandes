@@ -211,5 +211,27 @@ class Commande {
         
         return $stmt->execute();
     }
+
+    /**
+     * Snooze l'alerte d'une commande (reporte de 2 jours ouvrés à partir d'aujourd'hui)
+     */
+    public function snoozeAlerte($id) {
+        $query = "UPDATE " . $this->table . " SET alerte_depuis = :today WHERE id = :id";
+        $stmt  = $this->conn->prepare($query);
+        $stmt->bindValue(':today', date('Y-m-d'));
+        $stmt->bindValue(':id',    $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    /**
+     * Remet à zéro l'alerte (appelé lors d'un rechargement)
+     */
+    public function resetAlerte($id) {
+        $query = "UPDATE " . $this->table . " SET alerte_depuis = NULL WHERE id = :id";
+        $stmt  = $this->conn->prepare($query);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
 }
 ?>
