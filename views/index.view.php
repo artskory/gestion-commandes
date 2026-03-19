@@ -157,6 +157,23 @@ $extraScripts = <<<'JS'
 </script>
 JS;
 
+$extraScripts .= <<<'JS'
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.btn-alerte-delai').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const id  = this.dataset.id;
+            const el  = this;
+            fetch('snooze-alerte?id=' + id, { method: 'GET' })
+                .then(r => r.json())
+                .then(data => { if (data.ok) el.remove(); })
+                .catch(() => el.remove()); // disparaît même en cas d'erreur réseau
+        });
+    });
+});
+</script>
+JS;
+
 include 'views/layout/header.php';
 ?>
 
@@ -257,6 +274,14 @@ include 'views/layout/header.php';
                                             <td><?php echo htmlspecialchars($cmd['societe']); ?></td>
                                             <td><?php echo htmlspecialchars($cmd['n_commande_client']); ?></td>
                                             <td>
+                                                <?php if (alerteVisible($cmd)): ?>
+                                                <button type="button"
+                                                        class="btn btn-sm btn-danger btn-alerte-delai me-1"
+                                                        data-id="<?php echo $cmd['id']; ?>"
+                                                        title="Commande en attente depuis plus de 2 jours ouvrés">
+                                                    <i class="bi bi-clock-history"></i>
+                                                </button>
+                                                <?php endif; ?>
                                                 <a href="#"
                                                    class="btn btn-sm bg-warning-subtle icon-warning me-1"
                                                    title="Rechargement"
