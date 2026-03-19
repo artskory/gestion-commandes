@@ -1,0 +1,111 @@
+name: Bump Version
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: bump-version
+  cancel-in-progress: true
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'chore: bump version')"
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Lire et incrémenter la version
+        id: bump
+        run: |
+          CURRENT=$(grep "define('APP_VERSION'" version.php | grep -oP "APP_VERSION',\s*'\K[^']+")
+          if [ -z "$CURRENT" ]; then
+            echo "ERREUR : impossible de lire APP_VERSION dans version.php"
+            exit 1
+          fi
+          echo "Version actuelle : $CURRENT"
+
+          MAJOR=$(echo $CURRENT | cut -d. -f1)
+          MINOR=$(echo $CURRENT | cut -d. -f2)
+          PATCH=$(echo $CURRENT | cut -d. -f3)
+
+          MSG=""
+          for SHA in $(git log --pretty=%H -10); do
+            CANDIDATE=$(git log -1 --pretty=%s $SHA)
+            if echo "$CANDIDATE" | grep -qi "^Merge "; then
+              echo "Ignoré (merge) : $CANDIDATE"
+              continue
+            fi
+            if echo "$CANDIDATE" | grep -qi "^chore: bump version"; then
+              echo "Ignoré (bot) : $CANDIDATE"
+              continue
+            fi
+            MSG="$CANDIDATE"
+            echo "Message retenu : $MSG"
+            break
+          done
+
+          if [ -z "$MSG" ]; then
+            echo "Aucun message exploitable trouvé, abandon"
+            exit 0
+          fi
+
+          if echo "$MSG" | grep -qi "^major:"; then
+            MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0; TYPE="majeure"
+          elif echo "$MSG" | grep -qi "^minor:"; then
+            MINOR=$((MINOR + 1)); PATCH=0; TYPE="mineure"
+          else
+            PATCH=$((PATCH + 1)); TYPE="patch"
+          fi
+
+          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          NEW_DATE=$(date +%Y-%m-%d)
+          echo "Nouvelle version : $NEW_VERSION ($TYPE)"
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "new_date=$NEW_DATE"       >> $GITHUB_OUTPUT
+          echo "bump_type=$TYPE"          >> $GITHUB_OUTPUT
+
+      - name: Mettre à jour version.php et commiter
+        run: |
+          NEW_VERSION="${{ steps.bump.outputs.new_version }}"
+          NEW_DATE="${{ steps.bump.outputs.new_date }}"
+          BUMP_TYPE="${{ steps.bump.outputs.bump_type }}"
+
+          if [ -z "$NEW_VERSION" ]; then
+            echo "Pas de nouvelle version à écrire, abandon"
+            exit 0
+          fi
+
+          {
+            echo '<?php'
+            echo '/**'
+            echo ' * Version de l'"'"'application — Gestion des Commandes'
+            echo ' * Mise a jour automatiquement par GitHub Actions.'
+            echo ' * Mis à jour automatiquement par GitHub Actions. NE PAS modifier manuellement.'
+            echo ' */'
+            echo "define('APP_VERSION',      '$NEW_VERSION');"
+            echo "define('APP_VERSION_DATE', '$NEW_DATE');"
+          } > version.php
+
+          echo "--- Contenu de version.php ---"
+          cat version.php
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add version.php
+          if git diff --staged --quiet; then
+            echo "Aucun changement à commiter"
+          else
+            git commit -m "chore: bump version -> v$NEW_VERSION ($BUMP_TYPE)"
+            git push
+            echo "version.php pousse sur main : v$NEW_VERSION"
+          fi
