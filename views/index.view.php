@@ -177,11 +177,9 @@ JS;
 include 'views/layout/header.php';
 ?>
 
-    <?php if (empty($_COOKIE['bookmarklet_installed'])): ?>
     <a href="tools/dolibarr-bookmarklet.html" class="btn btn-primary btn-vertical" target="_blank">
         <i class="bi bi-bookmark-star"></i> Installer le Bookmarklet
     </a>
-    <?php endif; ?>
     <!-- Modal de confirmation personnalisée -->
     <div class="custom-modal-overlay" id="modal-overlay"></div>
     <div class="custom-modal" id="custom-modal">
