@@ -16,6 +16,9 @@ RewriteCond %{REQUEST_FILENAME} !-d
 # Mise à jour : /update → update.php
 RewriteRule ^update$ update.php [L]
 
+# Snooze alerte délai : /snooze-alerte → index.php?snooze-alerte=1
+RewriteRule ^snooze-alerte$ index.php?snooze-alerte=1 [L,QSA]
+
 # Ping bookmarklet : /ping-bookmarklet → index.php?ping-bookmarklet=1
 RewriteRule ^ping-bookmarklet$ index.php?ping-bookmarklet=1 [L]
 
