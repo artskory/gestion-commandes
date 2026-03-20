@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS commandes (
     n_commande_client VARCHAR(100) NOT NULL,
     reference_article VARCHAR(255),
     date_commande DATE,
+    alerte_depuis DATE NULL DEFAULT NULL,
     n_devis VARCHAR(100),
     quantite_par_modele INT,
     dossier_suivi_par VARCHAR(100) DEFAULT 'Matthieu',
