@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
     <link rel="stylesheet" href="<?php echo $basePath; ?>css/style.css">
+    <?php if (!empty($extraStyles)) echo $extraStyles; ?>
     <link rel="icon" type="image/png" href="<?php echo $basePath; ?>image/favicon-96x96.png" sizes="96x96">
     <link rel="icon" type="image/svg+xml" href="<?php echo $basePath; ?>image/favicon.svg">
     <link rel="shortcut icon" href="<?php echo $basePath; ?>image/favicon.ico">

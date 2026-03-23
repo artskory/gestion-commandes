@@ -10,6 +10,11 @@ $basePath    = '/gestion-commandes/';
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>404 — Page Non Approuvée</title>
   <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="<?php echo $basePath; ?>image/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/svg+xml" href="<?php echo $basePath; ?>image/favicon.svg">
+  <link rel="shortcut icon" href="<?php echo $basePath; ?>image/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="<?php echo $basePath; ?>image/apple-touch-icon.png">
+  <link rel="manifest" href="<?php echo $basePath; ?>image/site.webmanifest">
   <style>
     :root {
       --ink: #1a1008;

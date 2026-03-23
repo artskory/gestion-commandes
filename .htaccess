@@ -13,6 +13,9 @@ RewriteBase /gestion-commandes/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
+# BAT — Étape 2 : /bat/verifier/123 → public/bat-verifier.php?id=123
+RewriteRule ^bat/verifier/([0-9]+)$ public/bat-verifier.php?id=$1 [L,QSA]
+
 # Mise à jour : /update → update.php
 RewriteRule ^update$ update.php [L]
 
@@ -49,6 +52,12 @@ RewriteRule ^corbeille$ index.php?corbeille=confirme [L]
 
 # Bloquer accès direct au dossier logs
 RedirectMatch 403 ^/[^/]+/logs/
+
+# Bloquer accès direct aux uploads
+RedirectMatch 403 ^/[^/]+/uploads/
+
+# Bloquer accès direct au dossier vendor
+RedirectMatch 403 ^/[^/]+/vendor/
 
 # Bloquer l'accès aux dossiers sensibles
 RedirectMatch 403 ^/gestion-commandes/(classes|controllers|config\.php)

@@ -30,8 +30,8 @@ class Security {
         // Adapté aux CDN Bootstrap, FontAwesome et jQuery utilisés dans l'app
         header("Content-Security-Policy: " . implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' https://code.jquery.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
-            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
+            "script-src 'self' 'unsafe-inline' https://code.jquery.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.quilljs.com",
+            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.quilljs.com",
             "font-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
             "img-src 'self' data:",
             "connect-src 'self'",
